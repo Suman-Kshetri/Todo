@@ -12,7 +12,7 @@ function App() {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    axios.get('/api/signin')
+    axios.get('/api/signin') // Make sure the endpoint is correct
       .then((res) => {
         setUsers(res.data); // Update state with the response data
       })
