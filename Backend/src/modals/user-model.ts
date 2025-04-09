@@ -4,13 +4,14 @@ import { Schema } from 'mongoose';
 //for better type safety:
 //if we don't use the extends mongoose.Document,TypeScript types for .save() or _id or 
 // .populate() will not be available, because TypeScript thinks you’re working with a plain object — not a Mongoose Document.
-interface UserInterface extends mongoose.Document {
+export interface UserInterface extends mongoose.Document {
     username: string;
     email: string;
     password: string;
     avatar: string; // URL to the avatar image from cloudinary
     refreshTokn: string;
 }
+//exportin the userInterface we can use it later on the conrollers
 
 const userSchema = new Schema <UserInterface>({
     username: {
