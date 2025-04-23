@@ -11,7 +11,7 @@ export interface UserInterface extends mongoose.Document {
     email: string;
     password: string;
     avatar: string; // URL to the avatar image from cloudinary
-    refreshTokn: string;
+    refreshToken: string;
 }
 //exportin the userInterface we can use it later on the conrollers
 
@@ -28,20 +28,20 @@ const userSchema = new Schema <UserInterface>({
         type: String,
         required: true,
         unique: true,
-        lowecase: true,
+        lowercase: true,
         trim: true,
     },
 
     password: {
         type: String,
-        reqired: [true, "Password is required"],
+        required: [true, "Password is required"],
     },
     avatar: {
         type: String, // URL to the avatar image from cloudinary
         required: true,
     },
 
-    refreshTokn: {
+    refreshToken: {
         type: String,
     }
 },{timestamps: true});
@@ -50,10 +50,16 @@ const userSchema = new Schema <UserInterface>({
 //in this callback function, we should have this reference so we don't use arrow function
 //because arrow function doesn't have this reference
 userSchema.pre('save', async function (next) {
-    if(this.isModified('password')) {
-        this.password = await bcrypt.hash(this.password, 12);
-        next();
-    }
+    if(!this.isModified('password')) next();
+
+    this.password = await bcrypt.hash(this.password, 12);
+    next();
 })
+
+userSchema.methods.isPasswordCorrect = async function 
+    (this: UserInterface,password: string)
+    : Promise<boolean> {
+        return await bcrypt.compare(password, this.password);
+    }
 
 export const User = mongoose.model<UserInterface>('User', userSchema);
