@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import { Schema } from 'mongoose';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 //for better type safety:
 //if we don't use the extends mongoose.Document,TypeScript types for .save() or _id or 
@@ -43,5 +45,15 @@ const userSchema = new Schema <UserInterface>({
         type: String,
     }
 },{timestamps: true});
+
+//hash password before saving to database
+//in this callback function, we should have this reference so we don't use arrow function
+//because arrow function doesn't have this reference
+userSchema.pre('save', async function (next) {
+    if(this.isModified('password')) {
+        this.password = await bcrypt.hash(this.password, 12);
+        next();
+    }
+})
 
 export const User = mongoose.model<UserInterface>('User', userSchema);
