@@ -14,9 +14,6 @@ importers:
       '@types/cookie-parser':
         specifier: ^1.4.8
         version: 1.4.8(@types/express@5.0.1)
-      '@types/jsonwebtoken':
-        specifier: ^9.0.9
-        version: 9.0.9
       '@types/mongoose-aggregate-paginate-v2':
         specifier: ^1.0.12
         version: 1.0.12
@@ -51,6 +48,12 @@ importers:
       '@types/express':
         specifier: ^5.0.1
         version: 5.0.1
+      '@types/jsonwebtoken':
+        specifier: ^9.0.9
+        version: 9.0.9
+      '@types/mongoose':
+        specifier: ^5.11.97
+        version: 5.11.97
       '@types/nodemon':
         specifier: ^1.19.6
         version: 1.19.6
@@ -133,6 +136,10 @@ packages:
 
   '@types/mongoose-aggregate-paginate-v2@1.0.12':
     resolution: {integrity: sha512-wL8pgJQxqJagv5f5mR7aI8WgUu22nS6rVLoJm71W2Uu+iKfS8jgph2rRLfXrjo+dFt1s7ik5Zl+uGZ4f5GM6Vw==}
+
+  '@types/mongoose@5.11.97':
+    resolution: {integrity: sha512-cqwOVYT3qXyLiGw7ueU2kX9noE8DPGRY6z8eUxudhXY8NZ7DMKYAxyZkLSevGfhCX3dO/AoX5/SO9lAzfjon0Q==}
+    deprecated: Mongoose publishes its own types, so you do not need to install this package.
 
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
@@ -1000,6 +1007,19 @@ snapshots:
   '@types/mongoose-aggregate-paginate-v2@1.0.12':
     dependencies:
       '@types/node': 22.13.11
+      mongoose: 8.13.1
+    transitivePeerDependencies:
+      - '@aws-sdk/credential-providers'
+      - '@mongodb-js/zstd'
+      - gcp-metadata
+      - kerberos
+      - mongodb-client-encryption
+      - snappy
+      - socks
+      - supports-color
+
+  '@types/mongoose@5.11.97':
+    dependencies:
       mongoose: 8.13.1
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
