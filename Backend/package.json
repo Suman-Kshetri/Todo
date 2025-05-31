@@ -33,6 +33,7 @@
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/mongoose": "^5.11.97",
+    "@types/multer": "^1.4.12",
     "@types/nodemon": "^1.19.6",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
