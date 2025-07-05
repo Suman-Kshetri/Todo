@@ -36,6 +36,7 @@
     "@types/multer": "^1.4.12",
     "@types/nodemon": "^1.19.6",
     "nodemon": "^3.1.9",
+    "prettier": "3.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   }
