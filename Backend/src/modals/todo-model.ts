@@ -23,7 +23,7 @@ const TodoSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['completed', 'incomplete'],
+        enum: ['completed', 'incomplete','pending'],
         default: 'incomplete',
     },
     user: {
