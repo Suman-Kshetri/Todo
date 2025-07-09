@@ -13,6 +13,7 @@ export interface UserInterface extends mongoose.Document {
     password: string;
     avatar: string; // URL to the avatar image from cloudinary
     refreshToken: string;
+    googleId: string;
 }
 //exportin the userInterface we can use it later on the conrollers
 
@@ -48,7 +49,11 @@ const userSchema = new Schema <UserInterface>({
 
     refreshToken: {
         type: String,
-    }
+    },
+    googleId: {
+        type : String
+    },
+
 },{timestamps: true});
 
 //hash password before saving to database
