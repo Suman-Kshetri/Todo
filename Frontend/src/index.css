@@ -1,1 +1,51 @@
 @import "tailwindcss";
+:root,
+[data-theme="light"] {
+  --primary-color: #ffffff;           /* App background */
+  --secondary-color: #DCD4EE;         /* Card backgrounds */
+  --background-color: #F9FAFB;        /* Subtle background (body bg) */
+  --text-color: #0F1020;              /* Main text */
+  --muted-text-color: #4B5563;        /* Labels, subtext */
+  --accent-color: #0162D0;            /* Primary button/link */
+  --accent-color-hover: #0149a6;      /* Hover state */
+  --border-color: #E5E7EB;            /* Input borders */
+  --success-color: #10B981;           /* Success messages */
+  --warning-color: #F59E0B;           /* Warning/caution */
+  --error-color: #EF4444;             /* Errors */
+  --shadow-color: rgba(0, 0, 0, 0.05);/* Soft shadows */
+  --navbar-bg-light: rgba(175, 238, 238, 0.5); /* Pale aqua with transparency */
+  --navbar-backdrop-filter-light: blur(12px);
+
+  /* Aliases for clarity (re-use above variables) */
+  --bg-color: var(--background-color);
+  --form-bg: var(--primary-color);
+  --input-bg: var(--primary-color);
+  --button-bg: var(--accent-color);
+  --button-hover: var(--accent-color-hover);
+  --button-primary: var(--accent-color);
+}
+
+[data-theme="dark"] {
+  --primary-color: #171330;           /* Main background */
+  --secondary-color: #1F1B3A;         /* Card background */
+  --background-color: #0F0D26;        /* Page background */
+  --text-color: #F3F4F6;              /* Light text */
+  --muted-text-color: #9CA3AF;        /* Subtext */
+  --accent-color: #4F9EF9;            /* Primary button/link */
+  --accent-color-hover: #3B82F6;      /* Hover state */
+  --border-color: #374151;            /* Borders */
+  --success-color: #34D399;           /* Success */
+  --warning-color: #FBBF24;           /* Warning */
+  --error-color: #F87171;             /* Error */
+  --shadow-color: rgba(255, 255, 255, 0.05); /* Light shadows */
+  --navbar-bg-dark: rgba(25, 25, 35, 0.7); /* Dark bluish transparent */
+  --navbar-backdrop-filter-dark: blur(12px);
+
+  /* Aliases */
+  --bg-color: var(--primary-color);
+  --form-bg: var(--secondary-color);
+  --input-bg: #2A2545;
+  --button-bg: var(--accent-color);
+  --button-hover: var(--accent-color-hover);
+  --button-primary: var(--accent-color);
+}

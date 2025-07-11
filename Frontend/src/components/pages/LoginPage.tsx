@@ -7,7 +7,7 @@ type FormProps = {
   password: string;
 };
 
-const Login = () => {
+const LoginPage = () => {
   const {
     register,
     handleSubmit,
@@ -20,12 +20,12 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-color)] px-4 transition-colors duration-300">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white shadow-2xl rounded-2xl p-8 max-w-md w-full space-y-6 border border-gray-200"
+        className="bg-[var(--form-bg)] shadow-2xl rounded-2xl p-8 max-w-md w-full space-y-6 border border-[var(--border-color)] transition-colors duration-300"
       >
-        <h2 className="text-2xl font-bold text-center text-gray-800">
+        <h2 className="text-2xl font-bold text-center text-[var(--text-color)]">
           Sign In to Your Account
         </h2>
 
@@ -48,7 +48,7 @@ const Login = () => {
             label="Password"
             type="password"
             placeholder="••••••••"
-            showPasswordToggle // 👈 only this field gets the toggle
+            showPasswordToggle
             {...register("password", {
               required: "Password is required",
               minLength: {
@@ -64,11 +64,11 @@ const Login = () => {
           disabled={isSubmitting}
           label={isSubmitting ? "Signing in..." : "Sign In"}
           type="submit"
-          className="w-full bg-indigo-600 hover:bg-indigo-700 transition duration-300 cursor-pointer"
+          className="w-full cursor-pointer"
         />
       </form>
     </div>
   );
 };
 
-export default Login;
+export default LoginPage;
