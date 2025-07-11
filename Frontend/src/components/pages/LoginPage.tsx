@@ -6,8 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 
 const schema = z.object({
-  email: z.string().email(),
-  password : z.string().min(8)
+  email: z.string().trim().toLowerCase().email("Invalid email"),
+  password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[A-Z]/, "Must include one uppercase")
+      .regex(/[0-9]/, "Must include one number")
+      .regex(/[^A-Za-z0-9]/, "Must include one special character"),
 })
 
 type FormProps = z.infer<typeof schema>
@@ -27,6 +32,7 @@ const LoginPage = () => {
   };
 
   return (
+    
     <div className="min-h-screen flex items-center justify-center bg-[var(--bg-color)] px-4 transition-colors duration-300">
       <form
         onSubmit={handleSubmit(onSubmit)}

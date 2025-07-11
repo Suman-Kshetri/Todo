@@ -13,22 +13,18 @@ const Navbar: React.FC<NavbarProps> = ({ theme, onToggle }) => {
   return (
     <nav
       className={`
-        flex items-center justify-between px-6 py-3
-        backdrop-blur-md
-        ${
-          theme === "light"
-            ? "bg-white/70 text-[var(--text-color)] shadow-md"
-            : "bg-[var(--secondary-color)] text-[var(--text-color)] shadow-lg fixed top-[2px] left-0 right-0 z-50"
-        }
-      `}
+    fixed top-[2px] left-0 right-0 z-50
+    flex items-center justify-between px-6 py-3 backdrop-blur-md
+    ${
+      theme === "light"
+        ? "bg-white/70 text-[var(--text-color)] shadow-md"
+        : "bg-[var(--secondary-color)] text-[var(--text-color)] shadow-lg"
+    }
+  `}
     >
       {/* App name */}
       <div className="text-2xl font-bold">
-        <NavLink
-          to="/"
-        >
-          Netly
-        </NavLink>
+        <NavLink to="/">Netly</NavLink>
       </div>
 
       {/* Right side actions */}
