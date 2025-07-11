@@ -1,18 +1,25 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-type FormProps = {
-  email: string;
-  password: string;
-};
+
+const schema = z.object({
+  email: z.string().email(),
+  password : z.string().min(8)
+})
+
+type FormProps = z.infer<typeof schema>
 
 const LoginPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormProps>();
+  } = useForm<FormProps>({
+    resolver: zodResolver(schema)
+  });
 
   const onSubmit: SubmitHandler<FormProps> = async (data) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -34,11 +41,7 @@ const LoginPage = () => {
             label="Email"
             type="email"
             placeholder="you@example.com"
-            {...register("email", {
-              required: "Email is required",
-              validate: (value) =>
-                value.includes("@") || "Email must include @",
-            })}
+            {...register("email")}
             error={errors.email?.message}
           />
         </div>
@@ -49,13 +52,7 @@ const LoginPage = () => {
             type="password"
             placeholder="••••••••"
             showPasswordToggle
-            {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 8,
-                message: "Password must be at least 8 characters",
-              },
-            })}
+            {...register("password")}
             error={errors.password?.message}
           />
         </div>
