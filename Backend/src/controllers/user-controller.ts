@@ -3,6 +3,7 @@ import asyncHandler from '../utils/async-handler'
 import { User } from '../modals/user-model'
 import { uploadOnCloudinary } from '../utils/cloudinary'
 import { ApiResponse } from '../utils/api-response'
+import mongoose from 'mongoose';
 
 
 const registerUser = asyncHandler( async (req, res)=> {
@@ -70,6 +71,27 @@ const registerUser = asyncHandler( async (req, res)=> {
     )
 
 })
+//generating refresh and access token
+const generateAccessAndRefreshToken = async(userId: mongoose.Types.ObjectId | string) => {
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+      throw new ApiError(404, "User not found while generating tokens");
+    }
+
+        const accessToken = user.generateAccessToken()
+        const refreshToken = user.generateRefreshToken()
+
+        //save refresh token to db
+        user.refreshToken = refreshToken
+        await user.save({validateBeforeSave: false})
+
+        return {accessToken, refreshToken}
+    } catch (error) {
+        throw new ApiError(503,"Something went wrong while generating access and refresh token")
+    }
+}
 
 const loginUser = asyncHandler(async (req, res) => {
     //email+password form data
@@ -85,12 +107,38 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Email is required")
     }
     const user =  await User.findOne({email})
-
+    //doing this cause all the unwanted filed to be accessed so......>
     if(!user){
         throw new ApiError(404, "User doesnot exist")
     }
-    const isPasswordValid = await user.isPasswordCorrect(password)
+    const isPasswordValid = await user.isPasswordCorrect(password);
+    if(!isPasswordValid){
+        throw new ApiError(401, "Invalid User Credentials")
+    }
+    const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id as string);
 
+    //sending info to user : .....>update or do query again
+    const loggedInUser = User.findById(user._id).select("-password -refreshToken");
+
+
+    //sending cookies:
+    const options = {
+        //only modifiable by server
+        httpOnly : true,
+        secure : true
+    }
+
+
+    return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken" , refreshToken, options)
+    .json(
+        new ApiResponse(200,"User LoggedIn successfully",
+            {
+            user: loggedInUser, refreshToken, accessToken
+        })
+    )
 })
 
 export {registerUser, loginUser}
