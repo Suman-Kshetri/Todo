@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Schema } from 'mongoose';
 import jwt, {SignOptions} from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 //for better type safety:
 //if we don't use the extends mongoose.Document,TypeScript types for .save() or _id or 
