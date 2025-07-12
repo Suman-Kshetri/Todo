@@ -24,17 +24,13 @@ app.use(express.static('public'));
 app.use(cookieParser());
 
 
+import authRouter from "./routes/auth.routes";
 
-const signin = [{
-  Id: 112,
-  username: 'suman',
-  password: '123456',
-}];
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-app.get('/signin', (req, res) => {
-  res.send(signin);
-});
+
+
+//routes declaration
+app.use("/api/v1/auth", authRouter);
+
+
 
 export {app};
