@@ -15,7 +15,6 @@
   "packageManager": "pnpm@10.6.3",
   "dependencies": {
     "@types/bcrypt": "^5.0.2",
-    "@types/mongoose-aggregate-paginate-v2": "^1.0.12",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.1",
     "cookie-parser": "^1.4.7",
@@ -38,6 +37,7 @@
     "@types/express-session": "^1.18.2",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/mongoose": "^5.11.97",
+    "@types/mongoose-aggregate-paginate-v2": "^1.1.2",
     "@types/multer": "^1.4.13",
     "@types/node": "^24.0.13",
     "@types/nodemon": "^1.19.6",
