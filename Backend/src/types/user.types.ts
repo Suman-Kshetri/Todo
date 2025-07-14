@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export interface UserFields {
   username: string;
@@ -11,6 +11,7 @@ export interface UserFields {
 }
 
 export interface UserDocument extends Document, UserFields {
+   _id: Types.ObjectId;
   isPasswordCorrect(password: string): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;
