@@ -4,6 +4,7 @@ import { initTheme, toggleTheme } from "./utils/themechange";
 import Layout from "./components/Layout";
 import HomePage from "./components/pages/HomePage";
 import LoginPage from "./components/pages/LoginPage";
+import SignupPage from "./components/pages/SignupPage";
 
 const App = () => {
   const [theme, setTheme] = useState<"light" | "dark">("light");
@@ -24,6 +25,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path = "/signup" element= {<SignupPage/>}/>
         </Routes>
       </Layout>
     </Router>

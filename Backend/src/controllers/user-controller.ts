@@ -228,37 +228,5 @@ const refreshAccessToken = asyncHandler( async(req, res)=> {
   }
 })
 
-const googleAuthCallback = asyncHandler(async (req, res) => {
-  if (!req.user) {
-    throw new ApiError(401, "Google Authentication failed");
-  }
 
-  const user = req.user as UserDocument;
-  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
-
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
-
-  return res
-    .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
-    .json(
-      new ApiResponse(200, "Google Login Successful", {
-        user: {
-          _id: user._id,
-          email: user.email,
-          fullname: user.fullname,
-          avatar: user.avatar,
-          username: user.username,
-        },
-        accessToken,
-        refreshToken,
-      })
-    );
-});
-
-
-export { registerUser, loginUser, logoutUser, refreshAccessToken , googleAuthCallback};
+export { registerUser, loginUser, logoutUser, refreshAccessToken };

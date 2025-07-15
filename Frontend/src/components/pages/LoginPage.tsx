@@ -42,6 +42,18 @@ const LoginPage = () => {
         <h2 className="text-2xl font-bold text-center text-[var(--text-color)]">
           Sign In to Your Account
         </h2>
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          className="w-full flex items-center justify-center gap-2 border border-[var(--border-color)] rounded py-2 hover:bg-[var(--secondary-color)] transition text-sm font-medium text-[var(--text-color)] cursor-pointer"
+        >
+          <FaGoogle className="text-red-500" />
+          Continue with Google
+        </button>
+
+        <div className="flex items-center justify-center">
+          <span className="text-sm text-[var(--muted-text-color)]">or</span>
+        </div>
 
         <Input
           label="Email"
@@ -64,21 +76,8 @@ const LoginPage = () => {
           disabled={isSubmitting}
           label={isSubmitting ? "Signing in..." : "Sign In"}
           type="submit"
-          className="w-full cursor-pointer"
+          className="w-full bg-[var(--button-bg)] hover:bg-[var(--button-hover)] transition cursor-pointer"
         />
-
-        <div className="flex items-center justify-center">
-          <span className="text-sm text-gray-500">or</span>
-        </div>
-
-        <button
-          type="button"
-          onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-2 border cursor-pointer border-gray-300 rounded py-2 hover:bg-gray-100 transition text-sm font-medium"
-        >
-          <FaGoogle className="text-red-500" />
-          Continue with Google
-        </button>
       </form>
     </div>
   );
