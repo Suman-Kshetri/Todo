@@ -8,7 +8,8 @@ import axios from "axios";
 import { handleError, handleSuccess } from "../../utils/toast";
 import { useNavigate } from "react-router-dom";
 import { Toaster } from "sonner";
-
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../features/auth/authSlice';
 
 const schema = z.object({
   email: z.string().email("Invalid email"),
@@ -23,6 +24,7 @@ const schema = z.object({
 type FormProps = z.infer<typeof schema>;
 
 const LoginPage = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     register,
@@ -37,14 +39,14 @@ const LoginPage = () => {
       //   formData.append("password", data.password);
 
       // console.log("Login data: ", formData);
-      const response = await axios.post(
-        "/api/v1/auth/login",
-        { email: data.email, password: data.password }
-      );
+      const response = await axios.post("/api/v1/auth/login", {
+        email: data.email,
+        password: data.password,
+      });
       if (response.status === 200) {
-        // handleSuccess(response.data.message || "Login SuccessFull. Welcome");
-        navigate("/dashboard", { state: { message: response.data.message } });
-
+        dispatch(setUser(response.data.user)); // <-- from response
+        handleSuccess(response.data.message);
+        setTimeout(() => navigate("/home"), 1000);
       } else {
         handleError(response?.data?.message);
       }
