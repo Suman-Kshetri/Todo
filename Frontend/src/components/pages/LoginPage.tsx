@@ -4,6 +4,11 @@ import Button from "../ui/Button";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FaGoogle } from "react-icons/fa";
+import axios from "axios";
+import { handleError, handleSuccess } from "../../utils/toast";
+import { useNavigate } from "react-router-dom";
+import { Toaster } from "sonner";
+
 
 const schema = z.object({
   email: z.string().email("Invalid email"),
@@ -18,6 +23,7 @@ const schema = z.object({
 type FormProps = z.infer<typeof schema>;
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -25,8 +31,28 @@ const LoginPage = () => {
   } = useForm<FormProps>({ resolver: zodResolver(schema) });
 
   const onSubmit: SubmitHandler<FormProps> = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Data: ", data);
+    try {
+      // const formData = new FormData();
+      // formData.append("email", data.email),
+      //   formData.append("password", data.password);
+
+      // console.log("Login data: ", formData);
+      const response = await axios.post(
+        "/api/v1/auth/login",
+        { email: data.email, password: data.password }
+      );
+      if (response.status === 200) {
+        // handleSuccess(response.data.message || "Login SuccessFull. Welcome");
+        navigate("/dashboard", { state: { message: response.data.message } });
+
+      } else {
+        handleError(response?.data?.message);
+      }
+    } catch (err: any) {
+      const errorMessage =
+        err.response?.data?.message || "Login Failed. Try Again";
+      handleError(errorMessage);
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -79,6 +105,7 @@ const LoginPage = () => {
           className="w-full bg-[var(--button-bg)] hover:bg-[var(--button-hover)] transition cursor-pointer"
         />
       </form>
+      <Toaster position="top-right" richColors />
     </div>
   );
 };

@@ -11,8 +11,6 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
         ws: true,
-        rewrite: (path) => path.replace(/^\/api/, ""), 
-        // to replace the /api prefix with an empty string in the request path to the backend
       }
     },
   },

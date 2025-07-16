@@ -26,8 +26,6 @@ app.use(cookieParser());
 
 import authRouter from "./routes/auth.routes";
 
-
-
 //routes declaration
 app.use("/api/v1/auth", authRouter);
 

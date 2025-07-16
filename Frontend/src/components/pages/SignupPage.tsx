@@ -5,41 +5,50 @@ import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { FaGoogle } from "react-icons/fa";
 import { useState } from "react";
+import { handleError, handleSuccess } from "../../utils/toast";
+import axios from "axios";
+import { Toaster } from "sonner";
+import { useNavigate } from "react-router-dom";
 
-// Zod validation schema
-const schema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
-  fullname: z.string().min(2, "Full name must be at least 2 characters"),
-  email: z.string().email("Invalid email"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Must include one uppercase letter")
-    .regex(/[0-9]/, "Must include one number")
-    .regex(/[^A-Za-z0-9]/, "Must include one special character"),
-  avatar: z
-    .any()
-    .refine((file) => file instanceof File, "Profile image is required")
-    .refine((file) => file?.size <= 5 * 1024 * 1024, "File size must be under 5MB")
-    .refine(
-      (file) => ["image/jpeg", "image/png"].includes(file?.type),
-      "Only JPEG or PNG allowed"
-    ),
-});
+// Zod schema
+const schema = z
+  .object({
+    username: z.string().min(3, "Username must be at least 3 characters"),
+    fullname: z.string().min(2, "Full name must be at least 2 characters"),
+    email: z.string().email("Invalid email"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[A-Z]/, "Must include one uppercase letter")
+      .regex(/[0-9]/, "Must include one number")
+      .regex(/[^A-Za-z0-9]/, "Must include one special character"),
+    confirmPassword: z.string(),
+    avatar: z
+      .any()
+      .refine((file) => file instanceof File, "Profile image is required")
+      .refine(
+        (file) => file?.size <= 5 * 1024 * 1024,
+        "File size must be under 5MB"
+      )
+      .refine(
+        (file) => ["image/jpeg", "image/png"].includes(file?.type),
+        "Only JPEG or PNG allowed"
+      ),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 type FormProps = z.infer<typeof schema>;
 
-const getErrorMessage = (error: unknown): string | undefined => {
-  if (typeof error === "object" && error && "message" in error) {
-    const msg = (error as { message?: unknown }).message;
-    return typeof msg === "string" ? msg : undefined;
-  }
-  return undefined;
+const getErrorMessage = (error: any): string | undefined => {
+  return typeof error?.message === "string" ? error.message : undefined;
 };
 
 const SignupPage = () => {
-  const [error, setError] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("No file chosen");
+  const navigate = useNavigate();
 
   const {
     register,
@@ -52,11 +61,28 @@ const SignupPage = () => {
 
   const onSubmit: SubmitHandler<FormProps> = async (data) => {
     try {
-      setError(null);
-      console.log("Submitted:", data);
-      // TODO: call backend API here
-    } catch {
-      setError("Signup failed. Please try again.");
+      const formData = new FormData();
+      formData.append("username", data.username);
+      formData.append("fullname", data.fullname);
+      formData.append("email", data.email);
+      formData.append("password", data.password);
+      formData.append("avatar", data.avatar);
+      console.log("formdata: ", formData);
+      const response = await axios.post("/api/v1/auth/register", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (response.status === 201) {
+        handleSuccess(response.data.message || "Signup successful!");
+        navigate("/login");
+      } else {
+        handleError(response?.data?.message);
+      }
+    } catch (err: any) {
+      const errorMessage =
+        err.response?.data?.message || "Signup failed. Please try again.";
+      handleError(errorMessage);
     }
   };
 
@@ -80,16 +106,10 @@ const SignupPage = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="bg-[var(--form-bg)] shadow-xl rounded-2xl mt-20 p-8 max-w-md w-full space-y-6 border border-[var(--border-color)] transition-colors duration-300"
       >
-        {/* Heading */}
         <h2 className="text-2xl font-bold text-center text-[var(--text-color)]">
           Create Your Account
         </h2>
 
-        {error && (
-          <div className="text-[var(--error-color)] text-sm text-center">{error}</div>
-        )}
-
-        {/* Google Login Button */}
         <button
           type="button"
           onClick={handleGoogleLogin}
@@ -99,12 +119,10 @@ const SignupPage = () => {
           Continue with Google
         </button>
 
-        {/* Divider */}
         <div className="flex items-center justify-center">
           <span className="text-sm text-[var(--muted-text-color)]">or</span>
         </div>
 
-        {/* Form fields */}
         <Input
           label="Username"
           type="text"
@@ -138,13 +156,20 @@ const SignupPage = () => {
           error={getErrorMessage(errors.password)}
         />
 
-        {/* Custom File Upload */}
+        <Input
+          label="Confirm Password"
+          type="password"
+          placeholder="••••••••"
+          showPasswordToggle
+          {...register("confirmPassword")}
+          error={getErrorMessage(errors.confirmPassword)}
+        />
+
         <div>
           <label className="block text-sm font-medium text-[var(--text-color)] mb-1">
             Profile Picture
           </label>
           <div className="relative w-full flex items-center gap-4 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] px-4 py-2 cursor-pointer select-none">
-            {/* Hidden native input */}
             <input
               type="file"
               id="avatar-upload"
@@ -152,9 +177,9 @@ const SignupPage = () => {
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-lg"
               onChange={handleFileChange}
             />
-            {/* Display chosen file name */}
-            <span className="text-[var(--text-color)] truncate">{fileName}</span>
-            {/* Browse button */}
+            <span className="text-[var(--text-color)] truncate">
+              {fileName}
+            </span>
             <button
               type="button"
               className="bg-[var(--button-bg)] hover:bg-[var(--button-hover)] text-white px-3 py-1 rounded transition"
@@ -177,9 +202,12 @@ const SignupPage = () => {
           disabled={isSubmitting}
           label={isSubmitting ? "Signing up..." : "Sign Up"}
           type="submit"
-          className="w-full cursor-pointer"
+          className="w-full bg-[var(--button-bg)] hover:bg-[var(--button-hover)] transition cursor-pointer"
         />
       </form>
+
+      {/* Sonner Toast Container */}
+      <Toaster richColors position="top-right" />
     </div>
   );
 };

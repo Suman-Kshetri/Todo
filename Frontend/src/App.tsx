@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import HomePage from "./components/pages/HomePage";
 import LoginPage from "./components/pages/LoginPage";
 import SignupPage from "./components/pages/SignupPage";
+import { Toaster } from "sonner";
 
 const App = () => {
   const [theme, setTheme] = useState<"light" | "dark">("light");
@@ -20,15 +21,19 @@ const App = () => {
   };
 
   return (
+    <>
+    <Toaster richColors position="top-right" />
+
     <Router>
       <Layout theme={theme} onToggle={handleToggle}>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path = "/signup" element= {<SignupPage/>}/>
         </Routes>
       </Layout>
     </Router>
+    </>
   );
 };
 

@@ -13,7 +13,6 @@ authRouter.post(
 );
 
 authRouter.route("/login").post(loginUser)
-
 //secure routes
 
 authRouter.route("/logout").post(verifyJWT, logoutUser)
