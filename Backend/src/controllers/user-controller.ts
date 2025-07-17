@@ -227,6 +227,13 @@ const refreshAccessToken = asyncHandler( async(req, res)=> {
     throw new ApiError(401,"Invalid refresh Token")
   }
 })
+ const getUserProfile = asyncHandler(
+  async (req, res) => {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "User profile fetched", req.user));
+  }
+);
 
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken };
+export { registerUser, loginUser, logoutUser, refreshAccessToken ,getUserProfile};

@@ -1,26 +1,24 @@
+// src/components/Navbar.tsx
 import React from "react";
 import ToggleButton from "./ui/ToggleButton";
-import { NavLink } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "../store/store";
 import { logoutUserAPI } from "../features/auth/authAPI";
 import { clearUser } from "../features/auth/authSlice";
-
-type NavbarProps = {
-  theme: "light" | "dark";
-  onToggle: () => void;
-};
+import { toggleTheme } from "../features/theme/themeSlice";
 
 const activeClass = "border-b-2 border-indigo-600 font-semibold";
 
-const Navbar: React.FC<NavbarProps> = ({ theme, onToggle }) => {
-  const dispatch = useDispatch();
+const Navbar: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
+  const theme = useSelector((state: RootState) => state.theme.theme);
+
   const handleLogout = async () => {
     try {
       await logoutUserAPI();
@@ -28,27 +26,30 @@ const Navbar: React.FC<NavbarProps> = ({ theme, onToggle }) => {
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
-      // Optionally, show toast or alert here
     }
   };
+
+  const handleToggleTheme = () => {
+    dispatch(toggleTheme());
+  };
+
   return (
     <nav
       className={`
-    fixed top-[2px] left-0 right-0 z-50
-    flex items-center justify-between px-6 py-3 backdrop-blur-md
+    fixed top-0 left-0 right-0 z-50
+    flex items-center justify-between px-6 py-3
+    backdrop-blur-lg
     ${
       theme === "light"
-        ? "bg-white/70 text-[var(--text-color)] shadow-md"
-        : "bg-[var(--secondary-color)] text-[var(--text-color)] shadow-lg"
+        ? "bg-white/30 text-[var(--text-color)] shadow-sm"
+        : "bg-[var(--secondary-color)]/30 text-[var(--text-color)] shadow-sm"
     }
   `}
     >
-      {/* App name */}
       <div className="text-2xl font-bold">
         <NavLink to="/">Netly</NavLink>
       </div>
       <div className="flex items-center gap-6">
-        {/* Right side actions */}
         {isAuthenticated ? (
           <>
             <span>Welcome, {user?.username}</span>
@@ -84,8 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme, onToggle }) => {
           </>
         )}
 
-        {/* Theme toggle button */}
-        <ToggleButton theme={theme} onToggle={onToggle} />
+        <ToggleButton theme={theme} onToggle={handleToggleTheme} />
       </div>
     </nav>
   );

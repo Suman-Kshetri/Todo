@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginUser, logoutUser, refreshAccessToken, registerUser } from "../controllers/user-controller";
+import { loginUser, logoutUser, refreshAccessToken, registerUser, getUserProfile } from "../controllers/user-controller";
 import { upload } from "../middlewares/multer.middleware";
 import { verifyJWT } from "../middlewares/auth.middleware";
 import asyncHandler from "../utils/async-handler";
@@ -19,14 +19,6 @@ authRouter.route("/login").post(loginUser)
 authRouter.route("/logout").post(verifyJWT, logoutUser)
 //verifyjwt --> next() --> logoutuser -> now the logoutuser has acces to user object that we added
 authRouter.route("/refreshToken").post(refreshAccessToken)
-authRouter.get(
-  "/profile",
-  verifyJWT,
-  asyncHandler(async (req, res) => {
-    return res.status(200).json(
-      new ApiResponse(200, "User profile fetched", req.user)
-    );
-  })
-);
+authRouter.get("/profile", verifyJWT, getUserProfile);
 
 export default authRouter;

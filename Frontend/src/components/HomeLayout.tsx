@@ -1,19 +1,15 @@
+// src/components/HomeLayout.tsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
-import Dashboard from "./pages/Dashboard";
-import TodoList from "./pages/TodoList";
-import Profile from "./pages/Profile";
-import Settings from "./pages/Settings";
+import Dashboard from "./pages/private/Dashboard";
+import TodoList from "./pages/private/TodoList";
+import Profile from "./pages/private/Profile";
+import Settings from "./pages/private/Settings";
 import NotFoundPage from "./pages/NotFoundPage";
 
-interface HomeLayoutProps {
-  theme: "light" | "dark";
-  onToggle: () => void;
-}
-
-const HomeLayout: React.FC<HomeLayoutProps> = ({ theme, onToggle }) => (
-  <Layout theme={theme} onToggle={onToggle}>
+const HomeLayout: React.FC = () => (
+  <Layout>
     <Routes>
       <Route path="" element={<Dashboard />} />
       <Route path="todos" element={<TodoList />} />

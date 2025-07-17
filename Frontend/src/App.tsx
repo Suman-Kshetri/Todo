@@ -1,85 +1,78 @@
-import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { initTheme, toggleTheme } from "./utils/themechange";
-import Layout from "./components/Layout";
+// src/App.tsx
+import { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "./store/store";
+import { setTheme } from "./features/theme/themeSlice";
 import HomeLayout from "./components/HomeLayout";
 import LoginPage from "./components/pages/LoginPage";
 import SignupPage from "./components/pages/SignupPage";
-import { Toaster } from "sonner";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { useDispatch } from "react-redux";
+import PublicRoute from "./components/PublicRoute";
+import NotFoundPage from "./components/pages/NotFoundPage";
+import { Toaster } from "sonner";
 import { getCurrentUser } from "./features/auth/authAPI";
 import { setUser } from "./features/auth/authSlice";
-import PublicRoute from "./components/PublicRoute";
-import { Navigate } from "react-router-dom";
-import NotFoundPage from "./components/pages/NotFoundPage";
 
 const App = () => {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
   const dispatch = useDispatch();
+  const theme = useSelector((state: RootState) => state.theme.theme);
 
   useEffect(() => {
-    const initialTheme = initTheme();
-    setTheme(initialTheme);
+    // initializing theme from localStorage or default to light
+    if (!theme) {
+      dispatch(setTheme("light"));
+    }
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme, dispatch]);
 
+  useEffect(() => {
+    //restoring user auth state on app start
     const fetchUser = async () => {
       try {
         const response = await getCurrentUser();
-        const user = response.data.data;
-        dispatch(setUser(user)); // restore auth state
-      } catch (error) {
-        console.log("User not logged in or session expired.");
+        dispatch(setUser(response.data.data));
+      } catch {
+        // Not logged in or session expired
       }
     };
-
     fetchUser();
-  }, []);
-
-  const handleToggle = () => {
-    const newTheme = toggleTheme();
-    setTheme(newTheme);
-  };
+  }, [dispatch]);
 
   return (
     <>
       <Toaster richColors position="top-right" />
       <Router>
-        <Layout theme={theme} onToggle={handleToggle}>
-          <Routes>
-            <Route
-              path="/home/*" // Note the '*' here to enable nested routes!
-              element={
-                <ProtectedRoute>
-                  <HomeLayout theme={theme} onToggle={handleToggle} />
-                </ProtectedRoute>
-              }
-            />
+        <Routes>
+          <Route
+            path="/home/*"
+            element={
+              <ProtectedRoute>
+                <HomeLayout />
+              </ProtectedRoute>
+            }
+          />
 
-            {/* public routes */}
-            <Route
-              path="/login"
-              element={
-                <PublicRoute>
-                  <LoginPage />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/signup"
-              element={
-                <PublicRoute>
-                  <SignupPage />
-                </PublicRoute>
-              }
-            />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <PublicRoute>
+                <SignupPage />
+              </PublicRoute>
+            }
+          />
 
-            {/* Redirect root to /login */}
-            <Route path="/" element={<Navigate to="/login" replace />} />
-
-            {/* catch all 404 */}
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Layout>
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
       </Router>
     </>
   );
