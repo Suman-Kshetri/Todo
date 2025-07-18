@@ -3,15 +3,15 @@ import Input from "../ui/Input";
 import Button from "../ui/Button";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FaGoogle } from "react-icons/fa";
 import axios from "axios";
 import { handleError, handleSuccess } from "../../utils/toast";
 import { useNavigate } from "react-router-dom";
-import { Toaster } from "sonner";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
 import { setUser } from "../../features/auth/authSlice";
-import Navbar from "../Navbar";  // import Navbar here
+import Navbar from "../Navbar";
+import GoogleLogin from "./GoogleLogin";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const schema = z.object({
   email: z.string().email("Invalid email"),
@@ -47,7 +47,10 @@ const LoginPage = () => {
       if (response.status === 200) {
         dispatch(setUser(response.data.user));
         handleSuccess(response.data.message);
-        setTimeout(() => navigate("/home"), 1000);
+        setTimeout(() => {
+          window.location.reload(); // <-- forces full page reload
+          navigate("/home");
+        }, 1000);
       } else {
         handleError(response?.data?.message);
       }
@@ -58,10 +61,6 @@ const LoginPage = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/google`;
-  };
-
   return (
     <div
       className={`min-h-screen flex flex-col bg-[var(--bg-color)] px-4 transition-colors duration-300 ${
@@ -70,25 +69,19 @@ const LoginPage = () => {
     >
       <Navbar />
 
-      <main className="flex-grow flex items-center justify-center">
+      <main className="flex-grow flex flex-col items-center justify-center space-y-6 max-w-md mx-auto w-full">
+        <h2 className="text-2xl font-bold text-center text-[var(--text-color)]">
+          Sign In to Your Account
+        </h2>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="bg-[var(--form-bg)] shadow-2xl rounded-2xl p-8 max-w-md w-full space-y-6 border border-[var(--border-color)] transition-colors duration-300"
         >
-          <h2 className="text-2xl font-bold text-center text-[var(--text-color)]">
-            Sign In to Your Account
-          </h2>
+          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+            <GoogleLogin />
+          </GoogleOAuthProvider>
 
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-2 border border-[var(--border-color)] rounded py-2 hover:bg-[var(--secondary-color)] transition text-sm font-medium text-[var(--text-color)] cursor-pointer"
-          >
-            <FaGoogle className="text-red-500" />
-            Continue with Google
-          </button>
-
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center w-full">
             <span className="text-sm text-[var(--muted-text-color)]">or</span>
           </div>
 
@@ -117,8 +110,6 @@ const LoginPage = () => {
           />
         </form>
       </main>
-
-      <Toaster position="top-right" richColors />
     </div>
   );
 };

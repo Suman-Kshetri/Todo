@@ -49,3 +49,6 @@
   --button-hover: var(--accent-color-hover);
   --button-primary: var(--accent-color);
 }
+body {
+  font-family: 'Inter', 'Roboto';
+}

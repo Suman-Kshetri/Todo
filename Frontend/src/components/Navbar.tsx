@@ -17,6 +17,8 @@ const Navbar: React.FC = () => {
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
+   console.log("Navbar user:", user);
+  console.log("Navbar isAuthenticated:", isAuthenticated);
   const theme = useSelector((state: RootState) => state.theme.theme);
 
   const handleLogout = async () => {
@@ -55,7 +57,7 @@ const Navbar: React.FC = () => {
             <span>Welcome, {user?.username}</span>
             <button
               onClick={handleLogout}
-              className="font-medium hover:border-b-2 hover:border-indigo-400 cursor-pointer bg-transparent border-none p-0"
+              className="text-md text-white font-bold bg-gray-700 rounded-md  cursor-pointer px-3 py-1 transition duration-200 hover:bg-[var(--accent-color)] hover:border-b-2 border-transparent border-b-2"
             >
               Logout
             </button>

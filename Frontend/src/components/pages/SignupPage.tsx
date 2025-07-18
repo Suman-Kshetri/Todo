@@ -4,14 +4,15 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import { FaGoogle } from "react-icons/fa";
 import { handleError, handleSuccess } from "../../utils/toast";
 import axios from "axios";
 import { Toaster } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "../../store/store";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 import Navbar from "../Navbar"; // import Navbar here
+import GoogleLogin from "./GoogleLogin";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const schema = z
   .object({
@@ -44,7 +45,6 @@ const getErrorMessage = (error: any): string | undefined =>
 const SignupPage = () => {
   const [fileName, setFileName] = useState("No file chosen");
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
   const theme = useSelector((state: RootState) => state.theme.theme);
 
   const {
@@ -93,10 +93,6 @@ const SignupPage = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/google`;
-  };
-
   // Remove handleToggle and ToggleButton from here because Navbar controls theme
 
   return (
@@ -115,16 +111,9 @@ const SignupPage = () => {
           <h2 className="text-2xl font-bold text-center text-[var(--text-color)]">
             Create Your Account
           </h2>
-
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-2 border border-[var(--border-color)] rounded py-2 hover:bg-[var(--secondary-color)] transition text-sm font-medium text-[var(--text-color)]"
-          >
-            <FaGoogle className="text-red-500" />
-            Continue with Google
-          </button>
-
+          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+            <GoogleLogin />
+          </GoogleOAuthProvider>
           <div className="flex items-center justify-center">
             <span className="text-sm text-[var(--muted-text-color)]">or</span>
           </div>

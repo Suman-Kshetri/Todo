@@ -2,8 +2,8 @@ import { Router } from "express";
 import { loginUser, logoutUser, refreshAccessToken, registerUser, getUserProfile } from "../controllers/user-controller";
 import { upload } from "../middlewares/multer.middleware";
 import { verifyJWT } from "../middlewares/auth.middleware";
-import asyncHandler from "../utils/async-handler";
-import { ApiResponse } from "../utils/api-response";
+import { googleAuthCode } from "../controllers/googleAuthController";
+import passport from "passport";
 
 const authRouter = Router()
 
@@ -20,5 +20,9 @@ authRouter.route("/logout").post(verifyJWT, logoutUser)
 //verifyjwt --> next() --> logoutuser -> now the logoutuser has acces to user object that we added
 authRouter.route("/refreshToken").post(refreshAccessToken)
 authRouter.get("/profile", verifyJWT, getUserProfile);
+
+//Google OAuth
+
+authRouter.post("/google", googleAuthCode);
 
 export default authRouter;

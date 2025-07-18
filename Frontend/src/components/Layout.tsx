@@ -28,11 +28,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Navbar />
       <div className="flex pt-[70px] min-h-[calc(100vh-70px)]">
         {isHomeRoute && (
-          <aside className="w-48 min-h-full bg-[var(--form-bg)] border-r border-[var(--border-color)] px-4 py-6 space-y-2">
-            <NavLink to="/home" className={classStyle}>Dashboard</NavLink>
-            <NavLink to="/home/todos" className={classStyle}>My Todos</NavLink>
-            <NavLink to="/home/profile" className={classStyle}>Profile</NavLink>
-            <NavLink to="/home/settings" className={classStyle}>Settings</NavLink>
+          <aside className="w-40 min-h-full bg-[var(--form-bg)] border-r border-[var(--border-color)] px-4 py-6 space-y-2 text-sm">
+            <NavLink to="/home" end className={classStyle}>
+              Dashboard
+            </NavLink>
+            <NavLink to="/home/todos" className={classStyle}>
+              My Todos
+            </NavLink>
+            <NavLink to="/home/profile" className={classStyle}>
+              Profile
+            </NavLink>
+            <NavLink to="/home/settings" className={classStyle}>
+              Settings
+            </NavLink>
           </aside>
         )}
         <main className="flex-1 p-6">{children}</main>

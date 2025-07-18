@@ -1,8 +1,8 @@
-import { ApiError } from "../utils/api-error";
-import asyncHandler from "../utils/async-handler";
-import { User } from "../modals/user-model";
+import { ApiError } from "../utils/apiError";
+import asyncHandler from "../utils/asyncHandler";
+import { User } from "../models/user-model";
 import { uploadOnCloudinary } from "../utils/cloudinary";
-import { ApiResponse } from "../utils/api-response";
+import { ApiResponse } from "../utils/apiResponse";
 import mongoose from "mongoose";
 import { UserDocument } from "../types/user.types";
 import jwt from 'jsonwebtoken'
@@ -236,4 +236,4 @@ const refreshAccessToken = asyncHandler( async(req, res)=> {
 );
 
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken ,getUserProfile};
+export { registerUser, loginUser, logoutUser, refreshAccessToken ,getUserProfile,generateAccessAndRefreshToken};

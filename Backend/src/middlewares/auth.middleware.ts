@@ -1,10 +1,10 @@
 //verify if the user is or not
 
 import jwt from "jsonwebtoken";
-import { ApiError } from "../utils/api-error";
-import asyncHandler from "../utils/async-handler";
+import { ApiError } from "../utils/apiError";
+import asyncHandler from "../utils/asyncHandler";
 import dotenv from "dotenv";
-import { User } from "../modals/user-model";
+import { User } from "../models/user-model";
 import { JwtPayload } from "jsonwebtoken";
 
 dotenv.config();

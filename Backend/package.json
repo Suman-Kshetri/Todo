@@ -15,6 +15,7 @@
   "packageManager": "pnpm@10.6.3",
   "dependencies": {
     "@types/bcrypt": "^5.0.2",
+    "axios": "^1.10.0",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.1",
     "cookie-parser": "^1.4.7",
@@ -22,12 +23,14 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
+    "googleapis": "^153.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.1",
     "mongoose-aggregate-paginate-v2": "^1.1.4",
     "multer": "^2.0.0",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",
