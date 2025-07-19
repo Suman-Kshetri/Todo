@@ -1,21 +1,19 @@
 @import "tailwindcss";
 
-
-:root,
 [data-theme="light"] {
-  --primary-color: #ffffff;
-  --secondary-color: #DCD4EE;
-  --background-color: #F9FAFB;
-  --text-color: #0F1020;
-  --muted-text-color: #4B5563;
-  --accent-color: #0162D0;
-  --accent-color-hover: #0149a6;
-  --border-color: #E5E7EB;
-  --success-color: #10B981;
-  --warning-color: #F59E0B;
-  --error-color: #EF4444;
-  --shadow-color: rgba(0, 0, 0, 0.05);
-  --navbar-bg-light: rgba(175, 238, 238, 0.5);
+  --primary-color: #F2F0FF;
+  --secondary-color: #D8D4F2;
+  --background-color: #F8F6FF;
+  --text-color: #2D224C;
+  --muted-text-color: #7C6FA2;
+  --accent-color: #816CFA;
+  --accent-color-hover: #5B4DCA;
+  --border-color: #D4CCF0;
+  --success-color: #6EE7B7;
+  --warning-color: #FCD34D;
+  --error-color: #FB7185;
+  --shadow-color: rgba(0, 0, 0, 0.06);
+  --navbar-bg-light: rgba(242, 240, 255, 0.9);
   --navbar-backdrop-filter-light: blur(12px);
 
   --bg-color: var(--background-color);
@@ -26,29 +24,38 @@
   --button-primary: var(--accent-color);
 }
 
-[data-theme="dark"] {
-  --primary-color: #171330;
-  --secondary-color: #1F1B3A;
-  --background-color: #0F0D26;
-  --text-color: #F3F4F6;
-  --muted-text-color: #9CA3AF;
-  --accent-color: #4F9EF9;
-  --accent-color-hover: #3B82F6;
-  --border-color: #374151;
-  --success-color: #34D399;
-  --warning-color: #FBBF24;
-  --error-color: #F87171;
-  --shadow-color: rgba(255, 255, 255, 0.05);
-  --navbar-bg-dark: rgba(25, 25, 35, 0.7);
-  --navbar-backdrop-filter-dark: blur(12px);
 
-  --bg-color: var(--primary-color);
+[data-theme="dark"] {
+  --primary-color: #121212;           /* true carbon black */
+  --secondary-color: #1E1E1E;         /* slightly lighter, for cards/forms */
+  --background-color: #0A0A0A;        /* ultra dark bg */
+  --text-color: #F5F5F5;              /* near-white */
+  --muted-text-color: #9E9E9E;        /* cool gray */
+  --accent-color: #2D8EFF;            /* minimal blue highlight */
+  --accent-color-hover: #1E6FDB;      /* deeper hover */
+  --border-color: #2C2C2C;            /* dark gray border */
+  --success-color: #4CAF50;           /* standard green */
+  --warning-color: #FFC107;           /* amber */
+  --error-color: #F44336;             /* red */
+  --shadow-color: rgba(255, 255, 255, 0.05); /* subtle white shadow */
+  --navbar-bg-dark: rgba(18, 18, 18, 0.9);
+  --navbar-backdrop-filter-dark: blur(10px);
+
+  --bg-color: var(--background-color);
   --form-bg: var(--secondary-color);
-  --input-bg: #2A2545;
+  --input-bg: #1A1A1A;
   --button-bg: var(--accent-color);
   --button-hover: var(--accent-color-hover);
   --button-primary: var(--accent-color);
 }
+
+
 body {
   font-family: 'Inter', 'Roboto';
+  height: 100%;
+  background-color: var(--bg-color);
+  margin: 0;
+  padding: 0;
+  overscroll-behavior-y: contain;
 }
+

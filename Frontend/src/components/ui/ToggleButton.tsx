@@ -1,4 +1,3 @@
-// src/components/ToggleButton.tsx
 import React from "react";
 
 type ToggleButtonProps = {
@@ -11,40 +10,42 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({ theme, onToggle }) => {
     <button
       onClick={onToggle}
       aria-label="Toggle theme"
-      className="p-2 rounded-3xl bg-white dark:bg-gray-700 dark:bg-opacity-20 shadow-md hover:brightness-100 transition cursor-pointer flex items-center justify-center"
+      className={`
+        w-10 h-10
+        rounded-full
+        cursor-pointer
+        flex items-center justify-center
+        shadow-lg
+        transition-all duration-300 ease-in-out
+        ring-1 ring-border-color
+        hover:scale-105 hover:ring-2
+        bg-gray-100 text-gray-800
+        dark:bg-[#1f1b2e] dark:text-gray-900
+        dark:hover:bg-[#2a2545]
+      `}
     >
       {theme === "light" ? (
-        // Moon icon
+        // Moon icon for switching to dark
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 text-blue-100"
+          className="h-5 w-5 text-indigo-600 dark:text-indigo-300"
           viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
+          fill="currentColor"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            fill="url(#moonGradient)"
-            d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"
-          />
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
         </svg>
       ) : (
-        // Sun icon
+        // Sun icon for switching to light
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 text-yellow-400"
-          fill="yellow"
+          className="h-5 w-5 text-yellow-400 dark:text-yellow-300"
+          fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
           strokeWidth={2}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 3v1m0 16v1m8.66-9h-1M4.34 12h-1m15.36 5.66l-.7-.7M6.34 6.34l-.7-.7m12.02 12.02l-.7-.7M6.34 17.66l-.7-.7M12 7a5 5 0 100 10 5 5 0 000-10z"
-          />
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
         </svg>
       )}
     </button>

@@ -7,7 +7,6 @@ import HomeLayout from "./components/HomeLayout";
 import LoginPage from "./components/pages/LoginPage";
 import SignupPage from "./components/pages/SignupPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import PublicRoute from "./components/PublicRoute";
 import NotFoundPage from "./components/pages/NotFoundPage";
 import { Toaster } from "sonner";
 import { getCurrentUser } from "./features/auth/authAPI";
@@ -62,17 +61,13 @@ const App = () => {
           <Route
             path="/login"
             element={
-              <PublicRoute>
                 <LoginPage />
-              </PublicRoute>
             }
           />
           <Route
             path="/signup"
             element={
-              <PublicRoute>
                 <SignupPage />
-              </PublicRoute>
             }
           />
           <Route path="/" element={<Navigate to="/login" replace />} />

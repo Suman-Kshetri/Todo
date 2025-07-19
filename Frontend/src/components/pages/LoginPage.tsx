@@ -47,10 +47,10 @@ const LoginPage = () => {
       if (response.status === 200) {
         dispatch(setUser(response.data.user));
         handleSuccess(response.data.message);
+        navigate("/home");
         setTimeout(() => {
           window.location.reload(); // <-- forces full page reload
-          navigate("/home");
-        }, 1000);
+        }, 1);
       } else {
         handleError(response?.data?.message);
       }
@@ -70,13 +70,13 @@ const LoginPage = () => {
       <Navbar />
 
       <main className="flex-grow flex flex-col items-center justify-center space-y-6 max-w-md mx-auto w-full">
-        <h2 className="text-2xl font-bold text-center text-[var(--text-color)]">
-          Sign In to Your Account
-        </h2>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="bg-[var(--form-bg)] shadow-2xl rounded-2xl p-8 max-w-md w-full space-y-6 border border-[var(--border-color)] transition-colors duration-300"
         >
+        <h2 className="text-2xl font-bold text-center text-[var(--text-color)]">
+          Sign In to Your Account
+        </h2>
           <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
             <GoogleLogin />
           </GoogleOAuthProvider>

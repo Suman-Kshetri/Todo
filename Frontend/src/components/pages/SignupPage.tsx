@@ -106,7 +106,7 @@ const SignupPage = () => {
       <main className="flex-grow flex items-center justify-center">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="bg-[var(--form-bg)] shadow-xl rounded-2xl mt-20 p-8 max-w-md w-full space-y-6 border border-[var(--border-color)] transition-colors duration-300"
+          className="bg-[var(--form-bg)] shadow-xl rounded-2xl mt-20 mb-40 p-8 max-w-md w-full space-y-6 border border-[var(--border-color)] transition-colors duration-300"
         >
           <h2 className="text-2xl font-bold text-center text-[var(--text-color)]">
             Create Your Account

@@ -14,13 +14,13 @@ const GoogleLogin = () => {
     try {
       const res = await googleAuthCode(authResult);
 
-      if (res.status === 201) {
+      if (res.status === 201||200) {
         dispatch(setUser(res.data.user));
         handleSuccess(res.data.message);
+        navigate("/home");
         setTimeout(() => {
           window.location.reload();
-          navigate("/home");
-        }, 150);
+        }, 1);
       } else {
         handleError(res?.data?.message || "Google login failed");
       }
