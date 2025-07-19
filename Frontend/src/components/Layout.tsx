@@ -62,13 +62,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Fixed Menu button on left with current page label */}
       <div
         ref={dropdownRef}
-        className="fixed top-[70px] left-[20px] z-50 flex items-center space-x-3"
+        className="fixed top-[80px] left-[20px] z-50 flex items-center space-x-3"
         style={{ height: 40 }}
       >
         <button
           type="button"
           onClick={() => setDropdownOpen((prev) => !prev)}
-          className="inline-flex items-center rounded-lg cursor-pointer bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm
+          className="inline-flex items-center rounded-lg cursor-pointer bg-blue-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm
                      transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 h-full"
           id="dropdownDividerButton"
           aria-expanded={dropdownOpen}

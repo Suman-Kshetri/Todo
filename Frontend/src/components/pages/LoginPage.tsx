@@ -47,10 +47,11 @@ const LoginPage = () => {
       if (response.status === 200) {
         dispatch(setUser(response.data.user));
         handleSuccess(response.data.message);
-        navigate("/home");
+        
         setTimeout(() => {
+          navigate("/home");
           window.location.reload(); // <-- forces full page reload
-        }, 1);
+        }, 1500);
       } else {
         handleError(response?.data?.message);
       }

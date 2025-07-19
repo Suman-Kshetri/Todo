@@ -17,10 +17,11 @@ const GoogleLogin = () => {
       if (res.status === 201||200) {
         dispatch(setUser(res.data.user));
         handleSuccess(res.data.message);
-        navigate("/home");
+        
         setTimeout(() => {
+          navigate("/home");
           window.location.reload();
-        }, 1);
+        }, 1500);
       } else {
         handleError(res?.data?.message || "Google login failed");
       }
