@@ -1,12 +1,13 @@
 import { ApiError } from "../utils/apiError";
 import asyncHandler from "../utils/asyncHandler";
 import { User } from "../models/user-model";
-import { uploadOnCloudinary } from "../utils/cloudinary";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary";
 import { ApiResponse } from "../utils/apiResponse";
 import mongoose from "mongoose";
 import { UserDocument } from "../types/user.types";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import {v2 as cloudinary} from 'cloudinary'
 
 dotenv.config();
 
@@ -290,7 +291,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
     },
     { new: true } //after update information returns
   ).select("-password"); //since whole user is retuned then password aslso exclude
-  res
+  return res
     .status(200)
     .json(new ApiResponse(200, "Account Details Updated Successfully", user));
 });
@@ -315,8 +316,12 @@ const updateUserAvatar = asyncHandler(async(req,res) => {
   if(!currentUser){
     throw new ApiError(400, "Error while loading User")
   }
+
   const currentUserId = (currentUser as UserDocument)._id;
-  
+  if ((currentUser as UserDocument).avatarPublicId) {
+  await deleteFromCloudinary((currentUser as UserDocument).avatarPublicId as string);
+}
+
   const user = await User.findByIdAndUpdate(
     currentUserId,
     {
@@ -326,13 +331,39 @@ const updateUserAvatar = asyncHandler(async(req,res) => {
     },
     {new: true}
   ).select("-password")
-  res
+  return res
   .status(200)
   .json(
     new ApiResponse(200, "User Profile picture changed successfully",user)
   )
 })
 
+const deleteUserAccount = asyncHandler(async(req , res) => {
+  const currentUser = req.user;
+  if(!currentUser){
+    throw new ApiError(403, "Unauthorized access - user not found")
+  }
+  const userId = (currentUser as UserDocument)._id;
+  const user = await  User.findById(userId)
+  if(!user){
+    throw new ApiError(403, "User not found")
+  }
+  if(user.avatarPublicId){
+    try {
+      await cloudinary.uploader.destroy(user.avatarPublicId);
+    } catch (err) {
+      console.error("Error deleting avatar from Cloudinary:", err);
+    }
+
+  }
+  await User.findByIdAndDelete(userId);
+
+  return res
+  .status(200)
+  .json(
+    new ApiResponse(200, "User Account deleted successfully", {})
+  )
+})
 
 export {
   registerUser,

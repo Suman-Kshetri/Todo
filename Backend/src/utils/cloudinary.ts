@@ -41,3 +41,12 @@ const uploadOnCloudinary = async (localFilePath: string): Promise<UploadApiRespo
 };
 
 export { uploadOnCloudinary };
+
+export const deleteFromCloudinary = async (publicId: string): Promise<void> => {
+  try {
+    await cloudinary.uploader.destroy(publicId);
+    console.log(`Deleted image from Cloudinary: ${publicId}`);
+  } catch (error) {
+    console.error(`Error deleting image from Cloudinary: ${publicId}`, error);
+  }
+};

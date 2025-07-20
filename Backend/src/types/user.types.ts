@@ -6,6 +6,7 @@ export interface UserFields {
   email: string;
   password: string;
   avatar: string;
+  avatarPublicId?: string;
   refreshToken?: string;
   googleId?: string;
 }
