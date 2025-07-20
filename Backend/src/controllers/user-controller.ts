@@ -37,18 +37,18 @@ const registerUser = asyncHandler(async (req, res) => {
   if (existedUser) {
     throw new ApiError(
       409,
-      "User With This Username Or Email Already Existed!!"
+      "User with this username or email already existed!!"
     );
   }
   //checking if the file is in local file path or not
   const avatarLocalPath = req.file?.path;
   if (!avatarLocalPath) {
-    throw new ApiError(400, "Profile Image is required!!");
+    throw new ApiError(400, "Profile image is required!!");
   }
   //uploading to cloudinary
   const avatarImage = await uploadOnCloudinary(avatarLocalPath);
   if (!avatarImage) {
-    throw new ApiError(409, "Profile Picture is required!!!");
+    throw new ApiError(409, "Profile picture is required!!!");
   }
 
   //create entry in database:
@@ -374,5 +374,6 @@ export {
   generateAccessAndRefreshToken,
   changeCurrentUserPassword,
   updateAccountDetails,
-  updateUserAvatar
+  updateUserAvatar,
+  deleteUserAccount
 };

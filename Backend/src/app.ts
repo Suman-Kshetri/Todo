@@ -1,8 +1,6 @@
 import express  from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import session from "express-session";
-import passport from "passport";
 
 const app = express();
 
@@ -27,18 +25,11 @@ app.use(cookieParser());
 
 
 import authRouter from "./routes/auth.routes";
+import todoRouter from "./routes/todo.routes";
 //routes declaration
 app.use("/api/v1/auth", authRouter);
 
-app.use(
-  session({
-    secret: 'yourSecretKey',
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
+//todo route:
+app.use('/api/v1/todo', todoRouter);
 
 export {app};

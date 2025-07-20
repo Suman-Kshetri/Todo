@@ -1,4 +1,8 @@
-const TodoList = () => <div><h1>Todo List</h1></div>;
+import FilteredTodoList from "../../ui/SortByTodoList";
+
+const TodoList = () => <div><h1>Todo List</h1>
+<FilteredTodoList/>
+</div>;
 export default TodoList;
 
 {/* <TodoList />

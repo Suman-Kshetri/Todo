@@ -1,15 +1,7 @@
 import mongoose from "mongoose";
 import { Schema } from 'mongoose';
+import { TodoInterface } from "../types/todo.types";
 
-export interface TodoInterface extends mongoose.Document{
-    title: string;
-    description?: string;
-    status: 'completed' | 'incomplete';
-    user: mongoose.Schema.Types.ObjectId;
-    priority?: 'low' | 'medium' | 'high';
-    createdAt: Date;
-    updatedAt: Date;
-}
 
 const TodoSchema = new Schema({
     title: {
@@ -34,6 +26,7 @@ const TodoSchema = new Schema({
     priority: {
         type: String,
         enum: ['low', 'medium', 'high'],
+        default: 'medium'
     }
 },{ timestamps: true });
 
