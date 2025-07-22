@@ -27,7 +27,11 @@ const TodoSchema = new Schema({
         type: String,
         enum: ['low', 'medium', 'high'],
         default: 'medium'
-    }
+    },
+    completedAt: {
+      type: Date,
+      default: null,
+    },
 },{ timestamps: true });
 
 export const Todo = mongoose.model<TodoInterface>('Todo', TodoSchema);

@@ -35,11 +35,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
   }, [dropdownOpen]);
 
-  // Find current nav label by matching start of location.pathname
-  // Use longest match first (in case nested routes)
   const currentNavItem = navItems
     .slice()
-    .sort((a, b) => b.to.length - a.to.length) // longest path first
+    .sort((a, b) => b.to.length - a.to.length)
     .find((item) => location.pathname.startsWith(item.to));
 
   const currentLabel = currentNavItem ? currentNavItem.label : "";
@@ -53,7 +51,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div
-      className={`bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen flex flex-col`}
+      className="bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen flex flex-col"
       data-theme={theme}
       style={{ paddingTop: "60px" }}
     >
@@ -68,8 +66,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <button
           type="button"
           onClick={() => setDropdownOpen((prev) => !prev)}
-          className="inline-flex items-center rounded-lg cursor-pointer bg-blue-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm
-                     transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 h-full"
+          className="inline-flex items-center rounded-lg cursor-pointer px-5 py-2.5 text-sm font-medium shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 h-full"
+          style={{
+            backgroundColor: "var(--button-bg)",
+            color: "white",
+            boxShadow: "0 1px 2px var(--shadow-color)",
+          }}
+          onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--button-hover)")}
+          onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--button-bg)")}
           id="dropdownDividerButton"
           aria-expanded={dropdownOpen}
           aria-haspopup="true"
@@ -98,19 +102,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* Dropdown menu */}
         {dropdownOpen && (
           <div
-            className="mt-2 w-44 origin-top-left rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5
-                       divide-y divide-gray-100 dark:bg-gray-700 dark:divide-gray-600 absolute top-full left-0"
+            className="mt-2 w-44 origin-top-left rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 absolute top-full left-0 transition-colors duration-200"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="dropdownDividerButton"
             tabIndex={-1}
+            style={{
+              backgroundColor: "var(--form-bg)",
+              borderColor: "var(--border-color)",
+              color: "var(--text-color)",
+            }}
           >
-            <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" role="none">
+            <ul className="py-2 text-sm" role="none">
               {navItems.map(({ to, label }) => (
                 <li key={to} role="none">
                   <NavLink
                     to={to}
-                    end = {to === "/home"}
+                    end={to === "/home"}
                     className={({ isActive }) => classStyle({ isActive })}
                     onClick={() => setDropdownOpen(false)}
                     role="menuitem"
@@ -127,9 +135,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Main content */}
       <div className="flex flex-col items-start p-6 space-y-8 max-w-6xl mx-auto w-full">
-        <main
-          className="flex-1 w-full p-6 bg-[var(--bg-color)] rounded-lg overflow-auto"
-        >
+        <main className="flex-1 w-full p-6 bg-[var(--bg-color)] rounded-lg overflow-auto">
           {children}
         </main>
       </div>

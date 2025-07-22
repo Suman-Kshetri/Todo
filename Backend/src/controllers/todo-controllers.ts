@@ -30,7 +30,7 @@ const createTodo = asyncHandler(async (req, res) => {
   }
 
   return res
-  .status(200)
+  .status(201)
   .json(
     new ApiResponse(201,"Todo created successfully", todo))
 });
@@ -52,6 +52,9 @@ const getTodos = asyncHandler(async (req , res) => {
 
 // GET /api/v1/todos/filter?sort=status&value=pending
 const getFilteredTodos = asyncHandler(async (req, res) => {
+const sort = req.query.sort as string | undefined;
+const value = req.query.value as string | undefined;
+
   try {
     const currentuser = req.user;
     if(!currentuser){
@@ -125,7 +128,15 @@ const updateTodo = asyncHandler(async (req, res) => {
     throw new ApiError(403, "Unauthorized access - user not found in request");
   }
 
-  const userId = (currentUser as UserDocument)._id;
+  const userId = (currentUser as any)._id;
+
+  // If status is being updated to "completed", set completedAt to now.
+  // If status is changed away from "completed", clear completedAt.
+  if (req.body.status === "completed") {
+    req.body.completedAt = new Date();
+  } else if (req.body.status && req.body.status !== "completed") {
+    req.body.completedAt = null;
+  }
 
   const updatedTodo = await Todo.findOneAndUpdate(
     { _id: todoId, user: userId },
@@ -136,10 +147,9 @@ const updateTodo = asyncHandler(async (req, res) => {
   if (!updatedTodo) {
     throw new ApiError(403, "Todo not found or not authorized");
   }
-  return res
-    .status(200)
-    .json(new ApiResponse(200, "Todo list updated", updatedTodo));
+  return res.status(200).json(new ApiResponse(200, "Todo updated successfully",updatedTodo));
 });
+
 
 const deleteTodo = asyncHandler(async (req, res) => {
     const todoId = req.params.id;
@@ -151,16 +161,29 @@ const deleteTodo = asyncHandler(async (req, res) => {
         throw new ApiError(403, "Unauthorized access - user not found in request")
     }
     const userId = (currentUser as UserDocument)._id;
-    await Todo.findByIdAndDelete({
-        _id:todoId,
-        user: userId
-    })
+    await Todo.findOneAndDelete({ _id: todoId, user: userId });
+
     return res
     .status(200)
     .json(
         new ApiResponse(200,"Todo successfully deleted",{})
     )
 })
+const getSingleTodo = asyncHandler(async (req, res) => {
+  const todoId = req.params.id;
+  const userId = (req.user as UserDocument)._id;
+
+  if (!Types.ObjectId.isValid(todoId)) {
+    throw new ApiError(400, "Invalid Todo ID");
+  }
+
+  const todo = await Todo.findOne({ _id: todoId, user: userId });
+  if (!todo) {
+    throw new ApiError(404, "Todo not found");
+  }
+
+  return res.status(200).json(new ApiResponse(200, "Todo fetched", todo));
+});
 
 
-export { createTodo, getTodos, getFilteredTodos, updateTodo, deleteTodo };
+export { createTodo, getTodos, getFilteredTodos, updateTodo, deleteTodo ,getSingleTodo};

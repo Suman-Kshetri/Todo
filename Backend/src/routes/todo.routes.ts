@@ -5,6 +5,7 @@ import {
   getFilteredTodos,
   updateTodo,
   deleteTodo,
+  getSingleTodo,
 } from "../controllers/todo-controllers";
 import { verifyJWT } from "../middlewares/auth.middleware";
 
@@ -17,7 +18,9 @@ todoRouter.use(verifyJWT);
 todoRouter.post("/create", createTodo);
 todoRouter.get("/todolist", getTodos);
 todoRouter.get("/filter/criteria", getFilteredTodos);
-todoRouter.patch("/:id", updateTodo);
-todoRouter.delete("/:id", deleteTodo);
+todoRouter.patch("/edit/:id", updateTodo);
+todoRouter.delete("/delete/:id", deleteTodo);
+todoRouter.get("/single/:id", getSingleTodo);
+
 
 export default todoRouter;

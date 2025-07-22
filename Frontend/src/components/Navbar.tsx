@@ -8,7 +8,7 @@ import { clearUser } from "../features/auth/authSlice";
 import { toggleTheme } from "../features/theme/themeSlice";
 
 const activeClass =
-  "border-b-2 border-[var(--accent-color)] font-semibold text-[var(--accent-color)]";
+  "border-b-2 border-[var(--accent-color)] text-[var(--accent-color)] font-semibold";
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -35,35 +35,24 @@ const Navbar: React.FC = () => {
 
   return (
     <nav
-      className={`
-      fixed top-0 left-0 right-0 z-50
-      flex items-center justify-between px-6 py-3
-      backdrop-blur-lg
-      bg-[var(--navbar-bg-light)] dark:bg-[var(--navbar-bg-dark)]
-      text-[var(--text-color)]
-      shadow-sm
-      transition-colors duration-300
-    `}
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 backdrop-blur-md bg-[var(--navbar-bg)] text-[var(--text-color)] shadow-sm transition-colors duration-300"
     >
+      {/* Brand */}
       <div className="text-2xl font-bold text-[var(--accent-color)]">
         <NavLink to="/">Netly</NavLink>
       </div>
+
+      {/* Navigation Links & Auth */}
       <div className="flex items-center gap-6">
         {isAuthenticated ? (
           <>
-            {user?.username ? (
-              <span className="text-[var(--text-color)]">
-                Welcome, {user.username}
-              </span>
-            ) : (
-              <span className="italic text-[var(--muted-text-color)]">
-                Loading user...
-              </span>
-            )}
+            <span className="text-[var(--text-color)]">
+              Welcome, <span className="font-semibold">{user?.username}</span>
+            </span>
 
             <button
               onClick={handleLogout}
-              className="px-4 py-1 rounded bg-[var(--error-color)] hover:bg-[#dc3545] text-white font-semibold transition-colors duration-200 cursor-pointer"
+              className="px-4 py-1 rounded bg-[var(--error-color)] cursor-pointer hover:bg-[var(--error-color-hover)] text-white font-semibold transition-colors duration-200"
             >
               Logout
             </button>
@@ -73,8 +62,8 @@ const Navbar: React.FC = () => {
             <NavLink
               to="/login"
               className={({ isActive }) =>
-                `font-medium hover:border-b-2 hover:border-[var(--accent-color)] hover:text-[var(--accent-color)] transition-colors duration-200 ${
-                  isActive ? activeClass : "text-[var(--text-color)]"
+                `font-medium px-2 py-1 transition-colors duration-200 ${
+                  isActive ? activeClass : "text-[var(--text-color)] hover:text-[var(--accent-color)]"
                 }`
               }
             >
@@ -83,8 +72,8 @@ const Navbar: React.FC = () => {
             <NavLink
               to="/signup"
               className={({ isActive }) =>
-                `font-medium hover:border-b-2 hover:border-[var(--accent-color)] hover:text-[var(--accent-color)] transition-colors duration-200 ${
-                  isActive ? activeClass : "text-[var(--text-color)]"
+                `font-medium px-2 py-1 transition-colors duration-200 ${
+                  isActive ? activeClass : "text-[var(--text-color)] hover:text-[var(--accent-color)]"
                 }`
               }
             >
