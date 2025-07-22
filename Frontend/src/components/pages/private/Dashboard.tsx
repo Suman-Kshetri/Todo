@@ -3,16 +3,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { Link } from "react-router-dom";
 import { fetchTodos } from "../../../utils/api";
-import { Todo } from "../../../types";
 
 const Dashboard: React.FC = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [count, setCount] = useState<number>();
-  const [todo, setTodo] = useState<Todo[]>();
   useEffect(() => { 
   const datafetch = async () => {
     const fetchData = await fetchTodos();
-    setTodo(fetchData);  
     setCount((fetchData).length);
   }
   datafetch();

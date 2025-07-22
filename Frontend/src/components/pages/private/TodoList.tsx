@@ -4,20 +4,17 @@ import Button from "../../ui/Button";
 import CreateTodo from "../CreateTodo";
 import EditTodo from "../EditTodo";
 import DeleteTodo from "../DeleteTodo";
-import TodoFilter from "../../ui/TodoFilter";  // <-- import here
+import TodoFilter from "../../ui/TodoFilter";
 import { fetchTodos, deleteTodo, Todo } from "../../../utils/api";
 
 const TodoList = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [showCreate, setShowCreate] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
-
-  // Filter states
   const [sort, setSort] = useState<string>("");
   const [filterValue, setFilterValue] = useState<string>("");
 
@@ -26,8 +23,6 @@ const TodoList = () => {
     setError(null);
     try {
       let data = await fetchTodos();
-
-      // If you want to filter on client side (if API doesn't support filter):
       if (sort && filterValue) {
         data = data.filter((todo: Todo) => {
           if (sort === "status") return todo.status === filterValue;
@@ -47,7 +42,7 @@ const TodoList = () => {
 
   useEffect(() => {
     loadTodos();
-  }, [sort, filterValue]); // Reload when filter changes
+  }, [sort, filterValue]);
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -70,16 +65,15 @@ const TodoList = () => {
     <div className="p-6 max-w-4xl mx-auto text-[var(--text-color)]">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">My Todos</h1>
-        <Button label="Create Todo" onClick={() => setShowCreate(true)} />
+        <Button label="Create Todo" onClick={() => setShowCreate(true)} className="cursor-pointer"/>
       </div>
 
-      {/* Todo Filter */}
       <TodoFilter
         sort={sort}
         value={filterValue}
         onSortChange={(newSort) => {
           setSort(newSort);
-          setFilterValue(""); // reset filter value when sort changes
+          setFilterValue(""); 
         }}
         onValueChange={setFilterValue}
       />
@@ -105,7 +99,7 @@ const TodoList = () => {
                 </p>
               </div>
 
-              <div className="space-x-2">
+              <div className="space-x-2 cursor-pointer">
                 <Button label="Edit" onClick={() => setEditId(todo._id)} />
                 <Button
                   label="Delete"

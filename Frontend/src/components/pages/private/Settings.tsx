@@ -1,76 +1,72 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-import Input from "../../ui/Input"; // your input component path
-import Button from "../../ui/Button"; // your button component path
+import Input from "../../ui/Input";
+import Button from "../../ui/Button";
+import { handleSuccess, handleError } from "../../../utils/toast";
 
-const Settings: React.FC = () => {
-  // Form state for account update
+
+
+const Settings = () => {
+
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-
-  // Password change state
+  const [email, setEmail] = useState("")
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-
-  // Avatar upload state
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
-  // Feedback messages
-  const [accountMsg, setAccountMsg] = useState<string | null>(null);
-  const [passwordMsg, setPasswordMsg] = useState<string | null>(null);
-  const [avatarMsg, setAvatarMsg] = useState<string | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-  // Update Account Details handler
   const handleAccountUpdate = async () => {
-    setAccountMsg(null);
-    setErrorMsg(null);
+
     try {
-      const res = await axios.patch("/api/v1/user/account", { fullName, email });
-      setAccountMsg(res.data.message || "Account updated successfully.");
+      const res = await axios.patch("/api/v1/auth/user/update-account", {
+        fullName,
+        email,
+      });
+      handleSuccess(res.data.message || "Account updated successfully.");
     } catch (err: any) {
-      setErrorMsg(err.response?.data?.message || "Failed to update account.");
+      handleError(err.response?.data?.message || "Failed to update account.");
     }
   };
 
   // Change Password handler
   const handleChangePassword = async () => {
-    setPasswordMsg(null);
-    setErrorMsg(null);
+
     try {
-      const res = await axios.patch("/api/v1/user/password", {
+      const res = await axios.patch("/api/v1/auth/user/change-password", {
         oldPassword,
         newPassword,
       });
-      setPasswordMsg(res.data.message || "Password changed successfully.");
+      handleSuccess(res.data.message || "Password changed successfully.");
       setOldPassword("");
       setNewPassword("");
     } catch (err: any) {
-      setErrorMsg(err.response?.data?.message || "Failed to change password.");
+      handleError(err.response?.data?.message || "Failed to change password.");
     }
   };
 
   // Update Avatar handler
   const handleAvatarUpdate = async () => {
-    setAvatarMsg(null);
-    setErrorMsg(null);
+    
     if (!avatarFile) {
-      setErrorMsg("Please select an avatar file.");
+      handleError("Please select an avatar file.");
       return;
     }
     try {
       const formData = new FormData();
       formData.append("avatar", avatarFile);
 
-      const res = await axios.patch("/api/v1/user/avatar", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      setAvatarMsg(res.data.message || "Avatar updated successfully.");
+      const res = await axios.patch(
+        "/api/v1/auth/user/update-avatar",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      handleSuccess(res.data.message || "Avatar updated successfully.");
       setAvatarFile(null);
     } catch (err: any) {
-      setErrorMsg(err.response?.data?.message || "Failed to update avatar.");
+      handleError(err.response?.data?.message || "Failed to update avatar.");
     }
   };
 
@@ -94,8 +90,7 @@ const Settings: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
         />
-        <Button label="Update Account" onClick={handleAccountUpdate} />
-        {accountMsg && <p className="text-green-600">{accountMsg}</p>}
+        <Button label="Update Account" onClick={handleAccountUpdate} className="cursor-pointer" />
       </section>
 
       {/* Password Change */}
@@ -117,24 +112,21 @@ const Settings: React.FC = () => {
           placeholder="New Password"
           showPasswordToggle
         />
-        <Button label="Change Password" onClick={handleChangePassword} />
-        {passwordMsg && <p className="text-green-600">{passwordMsg}</p>}
+        <Button label="Change Password" onClick={handleChangePassword} className="cursor-pointer"/>
       </section>
 
       {/* Avatar Update */}
       <section className="border p-6 rounded shadow space-y-4">
         <h2 className="text-xl font-semibold">Update Profile Photo</h2>
-        <input
+        <Input
+          label="Image Upload"
           type="file"
           accept="image/*"
           onChange={(e) => setAvatarFile(e.target.files?.[0] ?? null)}
+          className="block w-full cursor-pointer rounded-lg border border-[var(--input-border)] bg-[var(--input-bg)] px-4 py-2 text-[var(--text-color)] placeholder:text-[var(--muted-text-color)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] transition"
         />
-        <Button label="Update Avatar" onClick={handleAvatarUpdate} />
-        {avatarMsg && <p className="text-green-600">{avatarMsg}</p>}
+        <Button label="Update Avatar" onClick={handleAvatarUpdate}  className="cursor-pointer"/>
       </section>
-
-      {/* Display Error Message */}
-      {errorMsg && <p className="text-red-600 font-semibold">{errorMsg}</p>}
     </div>
   );
 };
