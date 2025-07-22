@@ -53,7 +53,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div
       className="bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen flex flex-col"
       data-theme={theme}
-      style={{ paddingTop: "60px" }}
+      style={{ paddingTop: "10px" }}
     >
       <Navbar />
 

@@ -25,13 +25,13 @@ const DeleteTodo: React.FC<Props> = ({ onConfirm, onCancel, loading = false }) =
           <Button
             label="Cancel"
             onClick={onCancel}
-            className="bg-[var(--muted-text-color)] hover:brightness-110 text-white"
+            className="bg-[var(--muted-text-color)] hover:brightness-110 text-white cursor-pointer"
             disabled={loading}
           />
           <Button
             label={loading ? "Deleting..." : "Delete"}
             onClick={onConfirm}
-            className="bg-[var(--error-color)] hover:brightness-110 text-white"
+            className="bg-[var(--error-color)] hover:brightness-110 text-white cursor-pointer"
             disabled={loading}
           />
         </div>

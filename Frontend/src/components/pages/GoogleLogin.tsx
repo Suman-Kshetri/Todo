@@ -21,7 +21,7 @@ const GoogleLogin = () => {
         setTimeout(() => {
           navigate("/home");
           window.location.reload();
-        }, 1500);
+        }, 50);
       } else {
         handleError(res?.data?.message || "Google login failed");
       }

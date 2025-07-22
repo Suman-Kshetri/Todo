@@ -88,13 +88,15 @@ const CreateTodo: React.FC<Props> = ({ onClose, onTodoCreated }) => {
             label="Cancel"
             type="button"
             onClick={onClose}
-            className="bg-[var(--muted-text-color)] hover:brightness-110 text-white"
+            className="bg-[var(--muted-text-color)] hover:brightness-110 text-white cursor-pointer"
             disabled={loading}
           />
           <Button
+
             label={loading ? "Creating..." : "Create"}
             type="submit"
             disabled={loading}
+            className="cursor-pointer"
           />
         </div>
       </form>

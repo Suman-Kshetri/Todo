@@ -51,7 +51,7 @@ const LoginPage = () => {
         setTimeout(() => {
           navigate("/home");
           window.location.reload(); // <-- forces full page reload
-        }, 500);
+        }, 50);
       } else {
         handleError(response?.data?.message);
       }

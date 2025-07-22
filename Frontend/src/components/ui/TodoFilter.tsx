@@ -26,7 +26,7 @@ const TodoFilter: React.FC<Props> = ({ sort, value, onSortChange, onValueChange 
   const baseLabelClass = `block text-[var(--text-color)] font-medium`;
 
   return (
-    <div className="flex flex-col gap-4 p-4 bg-[var(--form-bg)] rounded shadow-md max-w-xs">
+    <div className="flex flex-row gap-4 p-4 bg-[var(--form-bg)] rounded shadow-md max-w-xs">
       <label className={baseLabelClass}>
         Sort By:
         <select

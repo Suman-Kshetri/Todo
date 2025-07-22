@@ -128,13 +128,14 @@ const EditTodo: React.FC<Props> = ({ id, onClose, onUpdated }) => {
           label="Cancel"
           type="button"
           onClick={onClose}
-          className="bg-[var(--muted-text-color)] hover:brightness-110 text-white"
+          className="bg-[var(--muted-text-color)] hover:brightness-110 text-white cursor-pointer"
           disabled={saving}
         />
         <Button
           label={saving ? "Saving..." : "Save"}
           type="submit"
           disabled={saving}
+          className="cursor-pointer"
         />
       </div>
     </form>

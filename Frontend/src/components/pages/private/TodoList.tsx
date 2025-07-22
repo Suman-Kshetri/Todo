@@ -100,10 +100,10 @@ const TodoList = () => {
               </div>
 
               <div className="space-x-2 cursor-pointer">
-                <Button label="Edit" onClick={() => setEditId(todo._id)} />
+                <Button label="Edit" onClick={() => setEditId(todo._id)} className="cursor-pointer" />
                 <Button
                   label="Delete"
-                  className="bg-red-600 hover:bg-red-700"
+                  className="bg-red-600 hover:bg-red-700 cursor-pointer"
                   onClick={() => setDeleteId(todo._id)}
                 />
               </div>
