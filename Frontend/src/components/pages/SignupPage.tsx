@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { handleError, handleSuccess } from "../../utils/toast";
-import axios from "axios";
+import axios from "../../utils/axios";
 import { Toaster } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";

@@ -3,7 +3,7 @@ import Input from "../ui/Input";
 import Button from "../ui/Button";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import axios from "../../utils/axios";
 import { handleError, handleSuccess } from "../../utils/toast";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";

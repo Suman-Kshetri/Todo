@@ -1,5 +1,5 @@
 
-import axios from "axios";
+import axios from "../../utils/axios";
 
 export const logoutUserAPI = async () => {
   return axios.post("/api/v1/auth/logout");
