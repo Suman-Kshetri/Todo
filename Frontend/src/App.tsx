@@ -13,10 +13,12 @@ import { getCurrentUser } from "./features/auth/authAPI";
 import { clearUser, setUser } from "./features/auth/authSlice";
 import Loading from "./components/ui/Loading";
 import axios from "axios";
+import PublicRoute from "./components/PublicRoutes";
 
 const App = () => {
   const dispatch = useDispatch();
   const theme = useSelector((state: RootState) => state.theme.theme);
+  const user = useSelector((state: RootState) => state.auth.user); // 👈 Get user from auth state
   const [loading, setLoading] = useState(true); // track loading state
 
   useEffect(() => {
@@ -28,25 +30,21 @@ const App = () => {
   }, [theme, dispatch]);
 
   useEffect(() => {
-  const loadApp = async () => {
-    try {
-      const response = await getCurrentUser();
-      dispatch(setUser(response.data.data));
-    } catch (err) {
-      if (axios.isAxiosError(err) && err.response?.status === 401) {
-        // User not authenticated
-        dispatch(clearUser()); // clear user state if you have this action
-      } else {
+    const loadApp = async () => {
+      try {
+        const response = await getCurrentUser();
+        dispatch(setUser(response.data.data));
+      } catch (err) {
+        if (axios.isAxiosError(err) && err.response?.status === 401) {
+          // User not authenticated
+          dispatch(clearUser());
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  };
-  loadApp();
-}, [dispatch]);
-
-
-
+    };
+    loadApp();
+  }, [dispatch]);
 
   if (loading) return <Loading />;
 
@@ -63,19 +61,25 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="/login" element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+            
+            } />
+          <Route path="/signup" element={
+            <PublicRoute>
+              <SignupPage />
+            </PublicRoute>
+            
+            } />
+
+          {/* ✅ Conditionally redirect / based on auth state */}
           <Route
-            path="/login"
-            element={
-                <LoginPage />
-            }
+            path="/"
+            element={<Navigate to={user ? "/home" : "/login"} replace />}
           />
-          <Route
-            path="/signup"
-            element={
-                <SignupPage />
-            }
-          />
-          <Route path="/" element={<Navigate to="/login" replace />} />
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>
