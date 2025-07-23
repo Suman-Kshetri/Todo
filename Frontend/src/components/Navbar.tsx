@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import ToggleButton from "./ui/ToggleButton";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { logoutUserAPI } from "../features/auth/authAPI";
-import { clearUser } from "../features/auth/authSlice";
 import { toggleTheme } from "../features/theme/themeSlice";
 
 const activeClass =
@@ -13,19 +12,22 @@ const activeClass =
 const Navbar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
-  const { user, isAuthenticated } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const theme = useSelector((state: RootState) => state.theme.theme);
 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const handleLogout = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
     try {
       await logoutUserAPI();
-      dispatch(clearUser());
       navigate("/login");
+      window.location.reload();
     } catch (error) {
       console.error("Logout failed:", error);
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -36,23 +38,27 @@ const Navbar: React.FC = () => {
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 backdrop-blur-md bg-[var(--navbar-bg)] text-[var(--text-color)] shadow-sm transition-colors duration-300"
+      role="navigation"
+      aria-label="Main navigation"
     >
-      {/* Brand */}
       <div className="text-2xl font-bold text-[var(--accent-color)]">
         <NavLink to="/">Netly</NavLink>
       </div>
 
-      {/* Navigation Links & Auth */}
       <div className="flex items-center gap-6">
         {isAuthenticated ? (
           <>
-            <span className="text-[var(--text-color)]">
+            <span className="text-[var(--text-color)]" aria-live="polite">
               Welcome, <span className="font-semibold">{user?.username}</span>
             </span>
 
             <button
+              aria-label="Logout"
               onClick={handleLogout}
-              className="px-4 py-1 rounded bg-[var(--error-color)] cursor-pointer hover:bg-[var(--error-color-hover)] text-white font-semibold transition-colors duration-200"
+              disabled={isLoggingOut}
+              className={`px-4 py-1 rounded bg-[var(--error-color)] cursor-pointer hover:bg-[var(--error-color-hover)] text-white font-semibold transition-colors duration-200 ${
+                isLoggingOut ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               Logout
             </button>

@@ -10,8 +10,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import NotFoundPage from "./components/pages/NotFoundPage";
 import { Toaster } from "sonner";
 import { getCurrentUser } from "./features/auth/authAPI";
-import { setUser } from "./features/auth/authSlice";
+import { clearUser, setUser } from "./features/auth/authSlice";
 import Loading from "./components/ui/Loading";
+import axios from "axios";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -27,21 +28,25 @@ const App = () => {
   }, [theme, dispatch]);
 
   useEffect(() => {
-    const loadApp = async () => {
-
-      try {
-        const response = await getCurrentUser();
-        dispatch(setUser(response.data.data));
-        
-      } catch (err) {
-        console.error("Failed to load current user:", err);
-      }finally{
-        setTimeout(() => setLoading(false), 1000);
+  const loadApp = async () => {
+    try {
+      const response = await getCurrentUser();
+      dispatch(setUser(response.data.data));
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 401) {
+        // User not authenticated
+        dispatch(clearUser()); // clear user state if you have this action
+      } else {
       }
-      
-    };
-    loadApp();
-  }, [dispatch]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  loadApp();
+}, [dispatch]);
+
+
+
 
   if (loading) return <Loading />;
 
