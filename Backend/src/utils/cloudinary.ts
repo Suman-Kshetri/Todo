@@ -20,7 +20,7 @@ const uploadOnCloudinary = async (localFilePath: string): Promise<UploadApiRespo
       resource_type: 'auto',
     });
 
-    console.log(`File uploaded to Cloudinary: ${response.secure_url}`);
+    
 
     return response;
 
@@ -34,7 +34,7 @@ const uploadOnCloudinary = async (localFilePath: string): Promise<UploadApiRespo
       if (err) {
         console.error("Failed to delete local file:", err);
       } else {
-        console.log("Local file deleted:", localFilePath);
+        
       }
     });
   }
@@ -45,7 +45,7 @@ export { uploadOnCloudinary };
 export const deleteFromCloudinary = async (publicId: string): Promise<void> => {
   try {
     await cloudinary.uploader.destroy(publicId);
-    console.log(`Deleted image from Cloudinary: ${publicId}`);
+    
   } catch (error) {
     console.error(`Error deleting image from Cloudinary: ${publicId}`, error);
   }

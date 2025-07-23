@@ -21,7 +21,6 @@ connectDB()
       console.error('Failed to start cron jobs:', err);
     }
   app.listen(port, () => {
-    console.log(`Backend running on http://localhost:${port}`);
   });
 })
 .catch((err) => console.log(err));

@@ -15,9 +15,6 @@ export function startTodoCronJobs() {
         status: "completed",
         completedAt: { $lte: cutoff },
       });
-      console.log(`Cron: Deleted ${deleteResult.deletedCount} completed todos older than 24h`);
-
-      // Update incomplete todos older than 24h to pending
       const updateResult = await Todo.updateMany(
         {
           status: "incomplete",
@@ -25,7 +22,6 @@ export function startTodoCronJobs() {
         },
         { $set: { status: "pending" } }
       );
-      console.log(`Cron: Updated ${updateResult.modifiedCount} todos from incomplete to pending`);
     } catch (err) {
       console.error("Cron job error:", err);
     }
