@@ -8,7 +8,10 @@ dotenv.config({
 });
 
 const port = process.env.PORT;
-
+const allowedOrigins = [
+  "https://your-frontend-domain.onrender.com", // your deployed frontend URL
+  "http://localhost:5173" // your local frontend dev URL
+];
 
 connectDB()
 .then(() => {

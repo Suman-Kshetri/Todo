@@ -3,11 +3,22 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 const app = express();
+const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173").split(",");
 
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("CORS policy: Origin not allowed"));
+    }
+  },
   credentials: true,
 }));
+
 
 //data comes on backend form frontend in different form json, body, head so we need to parse it
 //josn configure
