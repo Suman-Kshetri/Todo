@@ -13,14 +13,14 @@ const generateUsername = (email: string) => {
 
 const googleAuthCode = asyncHandler(async (req: Request, res: Response) => {
   const { code } = req.body;
+
   if (!code) throw new ApiError(400, "Authorization code not provided");
 
   const client_id = process.env.GOOGLE_CLIENT_ID!;
   const client_secret = process.env.GOOGLE_CLIENT_SECRET!;
-  const redirect_uri = "postmessage"; // This is the special value when using google auth code flow with Google API client on frontend
+  const redirect_uri = "postmessage";
 
   try {
-    // Exchange code for tokens
     const tokenResponse = await axios.post("https://oauth2.googleapis.com/token", {
       code,
       client_id,
@@ -31,7 +31,6 @@ const googleAuthCode = asyncHandler(async (req: Request, res: Response) => {
 
     const { access_token } = tokenResponse.data;
 
-    // Get user info from Google
     const userInfoResponse = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -57,31 +56,42 @@ const googleAuthCode = asyncHandler(async (req: Request, res: Response) => {
       });
     }
 
-    // Generate JWT tokens
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
-    // Save refresh token in DB
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
 
-    // Set HttpOnly, secure cookies
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",  // secure true in prod only
+      secure: process.env.NODE_ENV === "production", 
       sameSite: "strict" as const,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     };
 
     res
       .status(201)
-      .cookie("refreshToken", refreshToken, cookieOptions)
       .cookie("accessToken", accessToken, cookieOptions)
-      .json(new ApiResponse(201, "Login Successful via Google", { user, accessToken }));
+      .cookie("refreshToken", refreshToken, cookieOptions)
+      .json(
+        new ApiResponse(201, "Login successful via Google", {
+          user: {
+            _id: user._id,
+            fullname: user.fullname,
+            email: user.email,
+            avatar: user.avatar,
+            username: user.username,
+          },
+          accessToken,
+        })
+      );
   } catch (error: any) {
     console.error("Google Auth Error:", error.response?.data || error.message);
     throw new ApiError(500, "Failed during Google authentication");
   }
 });
+
+export default googleAuthCode;
+
 
 export { googleAuthCode };
