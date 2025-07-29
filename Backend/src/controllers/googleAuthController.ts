@@ -5,6 +5,7 @@ import { ApiError } from "../utils/apiError";
 import asyncHandler from "../utils/asyncHandler";
 import { ApiResponse } from "../utils/apiResponse";
 import { User } from "../models/user-model";
+import type { CookieOptions } from "express";
 
 const generateUsername = (email: string) => {
   const base = email.split("@")[0];
@@ -21,25 +22,32 @@ const googleAuthCode = asyncHandler(async (req: Request, res: Response) => {
   const redirect_uri = "postmessage";
 
   try {
-    const tokenResponse = await axios.post("https://oauth2.googleapis.com/token", {
-      code,
-      client_id,
-      client_secret,
-      redirect_uri,
-      grant_type: "authorization_code",
-    });
+    const tokenResponse = await axios.post(
+      "https://oauth2.googleapis.com/token",
+      {
+        code,
+        client_id,
+        client_secret,
+        redirect_uri,
+        grant_type: "authorization_code",
+      }
+    );
 
     const { access_token } = tokenResponse.data;
 
-    const userInfoResponse = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    const userInfoResponse = await axios.get(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
 
     const { email, name, picture, sub: googleId } = userInfoResponse.data;
 
-    if (!email || !name) throw new ApiError(400, "Missing required fields from Google response");
+    if (!email || !name)
+      throw new ApiError(400, "Missing required fields from Google response");
 
     let user = await User.findOne({ email });
 
@@ -62,10 +70,10 @@ const googleAuthCode = asyncHandler(async (req: Request, res: Response) => {
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
 
-    const cookieOptions = {
+    const cookieOptions: CookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", 
-      sameSite: "none" as const,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     };
 
@@ -92,6 +100,5 @@ const googleAuthCode = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export default googleAuthCode;
-
 
 export { googleAuthCode };

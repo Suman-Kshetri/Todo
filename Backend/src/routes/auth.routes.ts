@@ -23,7 +23,7 @@ authRouter.route("/login").post(loginUser);
 authRouter.route("/logout").post(verifyJWT, logoutUser);
 //verifyjwt --> next() --> logoutuser -> now the logoutuser has acces to user object that we added
 authRouter.route("/refreshToken").post(refreshAccessToken);
-authRouter.get("/profile", verifyJWT, getUserProfile);
+authRouter.route("/profile").get(verifyJWT, getUserProfile);
 
 //Google OAuth
 

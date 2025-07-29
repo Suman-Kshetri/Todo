@@ -11,26 +11,30 @@ const GoogleLogin = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const responseGoogle = async (authResult: { code: string }) => {
-    try {
-      const res = await googleAuthCode(authResult);
-
-      if (res.status === 201||200) {
-        dispatch(setUser(res.data.user));
+  try {
+    const res = await googleAuthCode(authResult);
+    if (res.status === 201 || res.status === 200) {
+      // Fix: Access user data from the correct nested structure
+      const userData = res.data.data?.user || res.data.user;
+      console.log("Google login response:", res.data); // Debug log
+      
+      if (userData) {
+        dispatch(setUser(userData));
         handleSuccess(res.data.message);
-        
         setTimeout(() => {
           navigate("/home");
-          window.location.reload();
-        }, 50);
+        }, 1000);
       } else {
-        handleError(res?.data?.message || "Google login failed");
+        handleError("User data not received from Google login");
       }
-    } catch (error: any) {
-      const msg =
-        error?.response?.data?.message || "Error during Google authentication";
-      handleError(msg);
+    } else {
+      handleError(res?.data?.message || "Google login failed");
     }
-  };
+  } catch (error: any) {
+    const msg = error?.response?.data?.message || "Error during Google authentication";
+    handleError(msg);
+  }
+};
 
   const googleLogin = useGoogleLogin({
     onSuccess: responseGoogle,

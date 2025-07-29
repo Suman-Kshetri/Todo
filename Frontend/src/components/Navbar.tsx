@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { logoutUserAPI } from "../features/auth/authAPI";
 import { toggleTheme } from "../features/theme/themeSlice";
+import { clearUser } from "../features/auth/authSlice";
 
 const activeClass =
   "border-b-2 border-[var(--accent-color)] text-[var(--accent-color)] font-semibold";
@@ -17,20 +18,19 @@ const Navbar: React.FC = () => {
 
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const handleLogout = async () => {
-    if (isLoggingOut) return;
-    setIsLoggingOut(true);
-    try {
-      await logoutUserAPI();
-      navigate("/login");
-      window.location.reload();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      setIsLoggingOut(false);
-    }
-  };
-
+ const handleLogout = async () => {
+  if (isLoggingOut) return;
+  setIsLoggingOut(true);
+  try {
+    await logoutUserAPI();     
+    dispatch(clearUser());    
+    navigate("/login");   
+  } catch (error) {
+    console.error("Logout failed:", error);
+  } finally {
+    setIsLoggingOut(false);
+  }
+};
   const handleToggleTheme = () => {
     dispatch(toggleTheme());
   };

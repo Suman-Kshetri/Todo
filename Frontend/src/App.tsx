@@ -12,17 +12,15 @@ import { Toaster } from "sonner";
 import { getCurrentUser } from "./features/auth/authAPI";
 import { clearUser, setUser } from "./features/auth/authSlice";
 import Loading from "./components/ui/Loading";
-import axios from "axios";
 import PublicRoute from "./components/PublicRoutes";
 
 const App = () => {
   const dispatch = useDispatch();
   const theme = useSelector((state: RootState) => state.theme.theme);
-  const user = useSelector((state: RootState) => state.auth.user); // 👈 Get user from auth state
-  const [loading, setLoading] = useState(true); // track loading state
+  const user = useSelector((state: RootState) => state.auth.user);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Apply theme on mount
     if (!theme) {
       dispatch(setTheme("light"));
     }
@@ -32,17 +30,35 @@ const App = () => {
   useEffect(() => {
     const loadApp = async () => {
       try {
+        console.log("Attempting to get current user...");
         const response = await getCurrentUser();
-        dispatch(setUser(response.data.data));
-      } catch (err) {
-        if (axios.isAxiosError(err) && err.response?.status === 401) {
-          // User not authenticated
+        const userData = response.data.data || response.data.user;
+        console.log("getCurrentUser response:", response.data);
+        
+        if (userData) {
+          dispatch(setUser(userData));
+        } else {
+          console.warn("No user data in response");
           dispatch(clearUser());
         }
+      } catch (err: any) {
+        console.error("Error loading user:", err);
+        
+        // Handle different error types
+        if (err.response?.status === 401) {
+          console.log("User not authenticated (401)");
+        } else if (err.response?.status === 404) {
+          console.error("Profile endpoint not found (404)");
+        } else {
+          console.error("Unexpected error:", err.message);
+        }
+        
+        dispatch(clearUser());
       } finally {
         setLoading(false);
       }
     };
+
     loadApp();
   }, [dispatch]);
 
@@ -61,25 +77,26 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="/login" element={
-            <PublicRoute>
-              <LoginPage />
-            </PublicRoute>
-            
-            } />
-          <Route path="/signup" element={
-            <PublicRoute>
-              <SignupPage />
-            </PublicRoute>
-            
-            } />
-
-          {/* ✅ Conditionally redirect / based on auth state */}
+          <Route 
+            path="/login" 
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            } 
+          />
+          <Route 
+            path="/signup" 
+            element={
+              <PublicRoute>
+                <SignupPage />
+              </PublicRoute>
+            } 
+          />
           <Route
             path="/"
             element={<Navigate to={user ? "/home" : "/login"} replace />}
           />
-
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>

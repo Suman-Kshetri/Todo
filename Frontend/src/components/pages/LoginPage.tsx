@@ -36,31 +36,35 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormProps>({ resolver: zodResolver(schema) });
+const onSubmit: SubmitHandler<FormProps> = async (data) => {
+  try {
+    const response = await axios.post("/api/v1/auth/login", {
+      email: data.email,
+      password: data.password,
+    });
 
-  const onSubmit: SubmitHandler<FormProps> = async (data) => {
-    try {
-      const response = await axios.post("/api/v1/auth/login", {
-        email: data.email,
-        password: data.password,
-      });
-
-      if (response.status === 200) {
-        dispatch(setUser(response.data.user));
+    if (response.status === 200) {
+      // Fix: Access user data from the correct nested structure
+      const userData = response.data.data?.user || response.data.user;
+      console.log("Login response:", response.data); // Debug log
+      
+      if (userData) {
+        dispatch(setUser(userData));
         handleSuccess(response.data.message);
-        
         setTimeout(() => {
           navigate("/home");
-          window.location.reload(); // <-- forces full page reload
-        }, 50);
+        }, 1000);
       } else {
-        handleError(response?.data?.message);
+        handleError("User data not received");
       }
-    } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message || "Login Failed. Try Again";
-      handleError(errorMessage);
+    } else {
+      handleError(response?.data?.message);
     }
-  };
+  } catch (err: any) {
+    const errorMessage = err.response?.data?.message || "Login Failed. Try Again";
+    handleError(errorMessage);
+  }
+};
 
   return (
     <div

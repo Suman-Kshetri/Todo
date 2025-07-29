@@ -103,39 +103,29 @@ const generateAccessAndRefreshToken = async (
 
 //login uer
 const loginUser = asyncHandler(async (req, res) => {
-  //email+password form data
-  //check if both field is or not
-  //find user if user exists or not
-  //if use is  then:
-  //check password is correct or not
-  //refresh and acces token generate then send to user using cookies
-  //send reponse sucessfully logged in
-
   const { email, password } = req.body;
+
   if (!email) {
     throw new ApiError(400, "Email is required");
   }
+
   const user = await User.findOne({ email });
-  //doing this cause all the unwanted filed to be accessed so......>
+
   if (!user) {
-    throw new ApiError(404, "User doesnot exist");
+    throw new ApiError(404, "User does not exist");
   }
+
   const isPasswordValid = await user.isPasswordCorrect(password);
+
   if (!isPasswordValid) {
     throw new ApiError(401, "Invalid User Credentials");
   }
-  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
-    user._id
-  );
 
-  //sending info to user : .....>update or do query again
-  const loggedInUser = await User.findById(user._id).select(
-    "-password -refreshToken"
-  );
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
 
-  //sending cookies:
+  const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+
   const options = {
-    //only modifiable by server
     httpOnly: true,
     secure: true,
   };
@@ -144,13 +134,11 @@ const loginUser = asyncHandler(async (req, res) => {
     .status(200)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
-    .json(
-      new ApiResponse(200, "User LoggedIn successfully", {
-        user: loggedInUser,
-        refreshToken,
-        accessToken,
-      })
-    );
+    .json(new ApiResponse(200, "User LoggedIn successfully", {
+      user: loggedInUser, // Make sure this structure matches what frontend expects
+      refreshToken,
+      accessToken,
+    }));
 });
 
 //logout user
