@@ -19,50 +19,83 @@ const App = () => {
   const theme = useSelector((state: RootState) => state.theme.theme);
   const user = useSelector((state: RootState) => state.auth.user);
   const [loading, setLoading] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
+    const currentTheme = theme || "light";
     if (!theme) {
-      dispatch(setTheme("light"));
+      dispatch(setTheme(currentTheme));
     }
-    document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.setAttribute("data-theme", currentTheme);
   }, [theme, dispatch]);
 
   useEffect(() => {
-    const loadApp = async () => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    let isMounted = true;
+
+    const checkAuth = async () => {
       try {
-        console.log("Attempting to get current user...");
-        const response = await getCurrentUser();
-        const userData = response.data.data || response.data.user;
-        console.log("getCurrentUser response:", response.data);
+        const timeoutPromise = new Promise((_, reject) => {
+          timeoutId = setTimeout(() => {
+            reject(new Error("Authentication check timeout"));
+          }, 5000); 
+        });
+
+        const response = await Promise.race([
+          getCurrentUser(),
+          timeoutPromise
+        ]) as any;
+
+        clearTimeout(timeoutId);
+
+        if (!isMounted) return;
+
+        const userData = response?.data?.data || response?.data?.user;
         
         if (userData) {
+          console.log("User authenticated successfully");
           dispatch(setUser(userData));
         } else {
-          console.warn("No user data in response");
+          console.log("No user data received");
           dispatch(clearUser());
         }
       } catch (err: any) {
-        console.error("Error loading user:", err);
-        
-        // Handle different error types
-        if (err.response?.status === 401) {
-          console.log("User not authenticated (401)");
-        } else if (err.response?.status === 404) {
-          console.error("Profile endpoint not found (404)");
-        } else {
-          console.error("Unexpected error:", err.message);
-        }
+        if (!isMounted) return;
+
+        console.error("Authentication check failed:", err.message);
         
         dispatch(clearUser());
+        
+        if (err.message === "Authentication check timeout") {
+          console.warn("Auth check timed out - proceeding without authentication");
+        } else if (err.response?.status === 401) {
+          console.log("User not authenticated");
+        } else if (err.response?.status === 404) {
+          console.error("Auth endpoint not found - check API configuration");
+        } else if (err.code === 'ECONNABORTED' || err.code === 'ERR_NETWORK') {
+          console.error("Network error - check API URL and connectivity");
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setAuthChecked(true);
+          setLoading(false);
+        }
       }
     };
 
-    loadApp();
+    checkAuth();
+
+    return () => {
+      isMounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [dispatch]);
 
-  if (loading) return <Loading />;
+  if (loading || !authChecked) {
+    return <Loading />;
+  }
 
   return (
     <>

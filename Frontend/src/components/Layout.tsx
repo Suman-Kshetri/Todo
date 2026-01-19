@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
@@ -16,7 +16,6 @@ const navItems = [
 ];
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const location = useLocation();
   const theme = useSelector((state: RootState) => state.theme.theme);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -35,12 +34,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
   }, [dropdownOpen]);
 
-  const currentNavItem = navItems
-    .slice()
-    .sort((a, b) => b.to.length - a.to.length)
-    .find((item) => location.pathname.startsWith(item.to));
-
-  const currentLabel = currentNavItem ? currentNavItem.label : "";
 
   const classStyle = ({ isActive }: { isActive: boolean }) =>
     `block rounded px-4 py-2 transition-colors duration-200 ${
@@ -57,7 +50,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     >
       <Navbar />
 
-      {/* Fixed Menu button on left with current page label */}
       <div
         ref={dropdownRef}
         className="fixed top-[80px] left-[20px] z-50 flex items-center space-x-3"
@@ -96,10 +88,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </svg>
         </button>
 
-        {/* Current page label */}
-        <span className="text-lg font-semibold select-none">{currentLabel}</span>
-
-        {/* Dropdown menu */}
         {dropdownOpen && (
           <div
             className="mt-2 w-44 origin-top-left rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 absolute top-full left-0 transition-colors duration-200"
@@ -133,7 +121,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         )}
       </div>
 
-      {/* Main content */}
       <div className="flex flex-col items-start p-6 space-y-8 max-w-6xl mx-auto w-full">
         <main className="flex-1 w-full p-6 bg-[var(--bg-color)] rounded-lg overflow-auto">
           {children}

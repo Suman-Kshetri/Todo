@@ -8,6 +8,7 @@ export const logoutUserAPI = async () => {
 export const getCurrentUser = async () => {
   return axios.get("/api/v1/auth/profile", {
     withCredentials: true, 
+    timeout: 5000,
   });
 };
 export const refreshTokenAPI = async () => {

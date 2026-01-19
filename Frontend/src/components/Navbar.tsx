@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
               aria-label="Logout"
               onClick={handleLogout}
               disabled={isLoggingOut}
-              className={`px-4 py-1 rounded bg-[var(--error-color)] cursor-pointer hover:bg-[var(--error-color-hover)] text-white font-semibold transition-colors duration-200 ${
+              className={`px-4 py-1 rounded bg-gray-600 cursor-pointer hover:bg-red-500 text-white font-semibold transition-colors duration-200 ${
                 isLoggingOut ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
