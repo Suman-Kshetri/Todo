@@ -10,7 +10,7 @@ import { Toaster } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import Navbar from "../Navbar"; // import Navbar here
+import Navbar from "../Navbar";
 import GoogleLogin from "./GoogleLogin";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -29,8 +29,14 @@ const schema = z
     avatar: z
       .any()
       .refine((file) => file instanceof File, "Profile image is required")
-      .refine((file) => file?.size <= 5 * 1024 * 1024, "File size must be under 5MB")
-      .refine((file) => ["image/jpeg", "image/png"].includes(file?.type), "Only JPEG or PNG allowed"),
+      .refine(
+        (file) => file?.size <= 5 * 1024 * 1024,
+        "File size must be under 5MB",
+      )
+      .refine(
+        (file) => ["image/jpeg", "image/png"].includes(file?.type),
+        "Only JPEG or PNG allowed",
+      ),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -66,9 +72,7 @@ const SignupPage = () => {
       formData.append("avatar", data.avatar);
 
       const response = await axios.post("/api/v1/auth/register", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (response.status === 201) {
@@ -78,7 +82,8 @@ const SignupPage = () => {
         handleError(response?.data?.message);
       }
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || "Signup failed. Please try again.";
+      const errorMessage =
+        err.response?.data?.message || "Signup failed. Please try again.";
       handleError(errorMessage);
     }
   };
@@ -93,108 +98,178 @@ const SignupPage = () => {
     }
   };
 
-  // Remove handleToggle and ToggleButton from here because Navbar controls theme
-
   return (
     <div
-      className={`min-h-screen flex flex-col bg-[var(--bg-color)] px-4 transition-colors duration-300 ${
+      className={`min-h-screen flex flex-col bg-[var(--bg-color)] transition-colors duration-300 ${
         theme === "light" ? "text-black" : "text-white"
       }`}
     >
       <Navbar />
 
-      <main className="flex-grow flex items-center justify-center">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="bg-[var(--form-bg)] shadow-xl rounded-2xl mt-20 mb-40 p-8 max-w-md w-full space-y-6 border border-[var(--border-color)] transition-colors duration-300"
-        >
-          <h2 className="text-2xl font-bold text-center text-[var(--text-color)]">
-            Create Your Account
-          </h2>
-          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-            <GoogleLogin />
-          </GoogleOAuthProvider>
-          <div className="flex items-center justify-center">
-            <span className="text-sm text-[var(--muted-text-color)]">or</span>
+      <main className="flex-grow flex items-center justify-center px-4 py-12 mt-8">
+        <div className="w-full max-w-md">
+          {/* Heading above card */}
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-bold tracking-tight text-[var(--text-color)]">
+              Create your account
+            </h1>
+            <p className="text-sm text-[var(--muted-text-color)] mt-1">
+              Join Netly and start managing your tasks
+            </p>
           </div>
 
-          <Input
-            label="Username"
-            type="text"
-            placeholder="johndoe"
-            {...register("username")}
-            error={getErrorMessage(errors.username)}
-          />
+          <div
+            className="rounded-2xl border p-8 shadow-xl space-y-5 transition-colors duration-300"
+            style={{
+              backgroundColor: "var(--form-bg)",
+              borderColor: "var(--border-color)",
+              boxShadow: "0 8px 40px var(--shadow-color)",
+            }}
+          >
+            {/* Google */}
+            <GoogleOAuthProvider
+              clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+            >
+              <GoogleLogin />
+            </GoogleOAuthProvider>
 
-          <Input
-            label="Full Name"
-            type="text"
-            placeholder="John Doe"
-            {...register("fullname")}
-            error={getErrorMessage(errors.fullname)}
-          />
-
-          <Input
-            label="Email"
-            type="email"
-            placeholder="you@example.com"
-            {...register("email")}
-            error={getErrorMessage(errors.email)}
-          />
-
-          <Input
-            label="Password"
-            type="password"
-            placeholder="••••••••"
-            showPasswordToggle
-            {...register("password")}
-            error={getErrorMessage(errors.password)}
-          />
-
-          <Input
-            label="Confirm Password"
-            type="password"
-            placeholder="••••••••"
-            showPasswordToggle
-            {...register("confirmPassword")}
-            error={getErrorMessage(errors.confirmPassword)}
-          />
-
-          <div>
-            <label className="block text-sm font-medium text-[var(--text-color)] mb-1">
-              Profile Picture
-            </label>
-            <div className="relative w-full flex items-center gap-4 border border-[var(--border-color)] rounded-lg bg-[var(--input-bg)] px-4 py-2 cursor-pointer select-none">
-              <input
-                type="file"
-                id="avatar-upload"
-                accept="image/jpeg,image/png"
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-lg"
-                onChange={handleFileChange}
+            {/* Divider */}
+            <div className="flex items-center gap-3">
+              <div
+                className="flex-1 h-px"
+                style={{ backgroundColor: "var(--border-color)" }}
               />
-              <span className="text-[var(--text-color)] truncate">{fileName}</span>
-              <button
-                type="button"
-                className="bg-[var(--button-bg)] hover:bg-[var(--button-hover)] text-white px-3 py-1 rounded transition"
-                onClick={() => document.getElementById("avatar-upload")?.click()}
-              >
-                Browse
-              </button>
+              <span className="text-xs text-[var(--muted-text-color)] font-medium uppercase tracking-widest">
+                or
+              </span>
+              <div
+                className="flex-1 h-px"
+                style={{ backgroundColor: "var(--border-color)" }}
+              />
             </div>
-            {errors.avatar && (
-              <p className="text-sm text-[var(--error-color)] mt-1">
-                {getErrorMessage(errors.avatar)}
-              </p>
-            )}
+
+            {/* Form */}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-1">
+              <Input
+                label="Username"
+                type="text"
+                placeholder="johndoe"
+                {...register("username")}
+                error={getErrorMessage(errors.username)}
+              />
+
+              <Input
+                label="Full Name"
+                type="text"
+                placeholder="John Doe"
+                {...register("fullname")}
+                error={getErrorMessage(errors.fullname)}
+              />
+
+              <Input
+                label="Email"
+                type="email"
+                placeholder="you@example.com"
+                {...register("email")}
+                error={getErrorMessage(errors.email)}
+              />
+
+              <Input
+                label="Password"
+                type="password"
+                placeholder="••••••••"
+                showPasswordToggle
+                {...register("password")}
+                error={getErrorMessage(errors.password)}
+              />
+
+              <Input
+                label="Confirm Password"
+                type="password"
+                placeholder="••••••••"
+                showPasswordToggle
+                {...register("confirmPassword")}
+                error={getErrorMessage(errors.confirmPassword)}
+              />
+
+              {/* File upload */}
+              <div className="mb-4">
+                <label className="block text-xs font-semibold uppercase tracking-widest text-[var(--muted-text-color)] mb-1.5">
+                  Profile Picture
+                </label>
+                <div
+                  className="relative flex items-center justify-between gap-3 rounded-lg border px-4 py-2.5 cursor-pointer transition-all duration-150 hover:border-[var(--accent-color)]"
+                  style={{
+                    backgroundColor: "var(--input-bg)",
+                    borderColor: "var(--border-color)",
+                  }}
+                >
+                  <input
+                    type="file"
+                    id="avatar-upload"
+                    accept="image/jpeg,image/png"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-lg"
+                    onChange={handleFileChange}
+                  />
+                  <span
+                    className="text-sm truncate flex-1"
+                    style={{
+                      color:
+                        fileName === "No file chosen"
+                          ? "var(--muted-text-color)"
+                          : "var(--text-color)",
+                    }}
+                  >
+                    {fileName}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      document.getElementById("avatar-upload")?.click()
+                    }
+                    className="flex-shrink-0 text-xs font-medium px-3 py-1.5 rounded-md text-white transition-all active:scale-95"
+                    style={{ backgroundColor: "var(--button-bg)" }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.backgroundColor =
+                        "var(--button-hover)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.backgroundColor =
+                        "var(--button-bg)")
+                    }
+                  >
+                    Browse
+                  </button>
+                </div>
+                {errors.avatar && (
+                  <p className="text-xs text-[var(--error-color)] mt-1.5 flex items-center gap-1">
+                    <span>⚠</span> {getErrorMessage(errors.avatar)}
+                  </p>
+                )}
+              </div>
+
+              <div className="pt-2">
+                <Button
+                  disabled={isSubmitting}
+                  label={isSubmitting ? "Creating account…" : "Create Account"}
+                  type="submit"
+                  className="w-full cursor-pointer"
+                />
+              </div>
+            </form>
           </div>
 
-          <Button
-            disabled={isSubmitting}
-            label={isSubmitting ? "Signing up..." : "Sign Up"}
-            type="submit"
-            className="w-full bg-[var(--button-bg)] hover:bg-[var(--button-hover)] transition cursor-pointer"
-          />
-        </form>
+          {/* Footer link */}
+          <p className="text-center text-sm text-[var(--muted-text-color)] mt-6">
+            Already have an account?{" "}
+            <a
+              href="/login"
+              className="font-medium text-[var(--accent-color)] hover:underline transition-colors"
+            >
+              Sign in
+            </a>
+          </p>
+        </div>
       </main>
 
       <Toaster richColors position="top-right" />

@@ -6,34 +6,74 @@ type Props = {
   loading?: boolean;
 };
 
-const DeleteTodo: React.FC<Props> = ({ onConfirm, onCancel, loading = false }) => {
+const DeleteTodo: React.FC<Props> = ({
+  onConfirm,
+  onCancel,
+  loading = false,
+}) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50 p-4"
+      style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
+    >
       <div
-        className="p-6 rounded shadow max-w-sm w-full"
+        className="w-full max-w-sm rounded-2xl border shadow-2xl overflow-hidden"
         style={{
           backgroundColor: "var(--form-bg)",
-          boxShadow: "0 4px 12px var(--shadow-color)",
+          borderColor: "var(--border-color)",
+          boxShadow: "0 24px 64px var(--shadow-color)",
         }}
       >
-        <h3 className="text-lg font-semibold text-[var(--text-color)] mb-4">Confirm Delete</h3>
-        <p className="mb-6 text-[var(--text-color)]">
-          Are you sure you want to delete this todo?
-        </p>
+        {/* Icon */}
+        <div className="pt-8 pb-2 flex justify-center">
+          <div
+            className="w-14 h-14 rounded-2xl flex items-center justify-center"
+            style={{
+              background: "rgba(var(--error-color-rgb, 239,68,68), 0.1)",
+            }}
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--error-color)"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14H6L5 6" />
+              <path d="M10 11v6M14 11v6" />
+              <path d="M9 6V4h6v2" />
+            </svg>
+          </div>
+        </div>
 
-        <div className="flex justify-end space-x-4">
-          <Button
-            label="Cancel"
-            onClick={onCancel}
-            className="bg-[var(--muted-text-color)] hover:brightness-110 text-white cursor-pointer"
-            disabled={loading}
-          />
-          <Button
-            label={loading ? "Deleting..." : "Delete"}
-            onClick={onConfirm}
-            className="bg-[var(--error-color)] hover:brightness-110 text-white cursor-pointer"
-            disabled={loading}
-          />
+        {/* Content */}
+        <div className="px-6 pb-6 text-center">
+          <h3 className="text-base font-semibold text-[var(--text-color)] mt-4 mb-2">
+            Delete Todo
+          </h3>
+          <p className="text-sm text-[var(--muted-text-color)] leading-relaxed mb-6">
+            Are you sure you want to delete this todo? This action cannot be
+            undone.
+          </p>
+
+          <div className="flex gap-3">
+            <Button
+              label="Cancel"
+              onClick={onCancel}
+              disabled={loading}
+              className="flex-1 bg-transparent border border-[var(--border-color)] text-[var(--muted-text-color)] hover:text-[var(--text-color)] hover:bg-[var(--input-bg)] shadow-none"
+            />
+            <Button
+              label={loading ? "Deleting…" : "Delete"}
+              onClick={onConfirm}
+              disabled={loading}
+              className="flex-1 bg-[var(--error-color)] hover:brightness-110 border-0"
+            />
+          </div>
         </div>
       </div>
     </div>

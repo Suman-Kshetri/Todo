@@ -22,7 +22,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setDropdownOpen(false);
       }
     }
@@ -34,11 +37,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
   }, [dropdownOpen]);
 
-
   const classStyle = ({ isActive }: { isActive: boolean }) =>
-    `block rounded px-4 py-2 transition-colors duration-200 ${
+    `flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-150 ${
       isActive
-        ? "bg-[var(--accent-color)] text-white"
+        ? "bg-[var(--accent-color)] text-white shadow-sm"
         : "text-[var(--text-color)] hover:bg-[var(--accent-color-hover)] hover:text-white"
     }`;
 
@@ -46,33 +48,31 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div
       className="bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen flex flex-col"
       data-theme={theme}
-      style={{ paddingTop: "10px" }}
     >
       <Navbar />
 
-      <div
-        ref={dropdownRef}
-        className="fixed top-[80px] left-[20px] z-50 flex items-center space-x-3"
-        style={{ height: 40 }}
-      >
+      {/* Dropdown Menu */}
+      <div ref={dropdownRef} className="fixed top-[72px] left-5 z-50">
         <button
           type="button"
           onClick={() => setDropdownOpen((prev) => !prev)}
-          className="inline-flex items-center rounded-lg cursor-pointer px-5 py-2.5 text-sm font-medium shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 h-full"
+          className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 active:scale-95"
           style={{
             backgroundColor: "var(--button-bg)",
-            color: "white",
-            boxShadow: "0 1px 2px var(--shadow-color)",
           }}
-          onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--button-hover)")}
-          onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--button-bg)")}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.backgroundColor = "var(--button-hover)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.backgroundColor = "var(--button-bg)")
+          }
           id="dropdownDividerButton"
           aria-expanded={dropdownOpen}
           aria-haspopup="true"
         >
           Menu
           <svg
-            className="w-3 h-3 ml-2"
+            className={`w-3 h-3 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -90,7 +90,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {dropdownOpen && (
           <div
-            className="mt-2 w-44 origin-top-left rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 absolute top-full left-0 transition-colors duration-200"
+            className="absolute top-full left-0 mt-2 w-48 rounded-xl shadow-lg border overflow-hidden"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="dropdownDividerButton"
@@ -98,12 +98,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             style={{
               backgroundColor: "var(--form-bg)",
               borderColor: "var(--border-color)",
-              color: "var(--text-color)",
+              boxShadow: "0 8px 24px var(--shadow-color)",
             }}
           >
-            <ul className="py-2 text-sm" role="none">
+            <ul className="py-1.5 text-sm" role="none">
               {navItems.map(({ to, label }) => (
-                <li key={to} role="none">
+                <li key={to} role="none" className="px-1.5">
                   <NavLink
                     to={to}
                     end={to === "/home"}
@@ -121,10 +121,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         )}
       </div>
 
-      <div className="flex flex-col items-start p-6 space-y-8 max-w-6xl mx-auto w-full">
-        <main className="flex-1 w-full p-6 bg-[var(--bg-color)] rounded-lg overflow-auto">
-          {children}
-        </main>
+      <div className="flex flex-col items-start pt-[120px] px-6 pb-8 max-w-6xl mx-auto w-full">
+        <main className="w-full">{children}</main>
       </div>
     </div>
   );

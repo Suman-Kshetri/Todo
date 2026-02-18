@@ -7,70 +7,78 @@ type Props = {
   onValueChange: (value: string) => void;
 };
 
-const TodoFilter: React.FC<Props> = ({ sort, value, onSortChange, onValueChange }) => {
-  const baseSelectClass = `
-    ml-2
-    p-1.5
-    rounded
-    border
-    border-[var(--border-color)]
-    bg-[var(--input-bg)]
-    text-[var(--text-color)]
-    focus:outline-none
-    focus:ring-2
-    focus:ring-[var(--accent-color)]
-    transition
-    duration-200
-  `;
+const selectClass = `
+  px-3 py-2 rounded-lg text-sm
+  border border-[var(--border-color)]
+  bg-[var(--input-bg)]
+  text-[var(--text-color)]
+  focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] focus:ring-opacity-40
+  cursor-pointer
+  transition-all duration-150
+`;
 
-  const baseLabelClass = `block text-[var(--text-color)] font-medium`;
-
+const TodoFilter: React.FC<Props> = ({
+  sort,
+  value,
+  onSortChange,
+  onValueChange,
+}) => {
   return (
-    <div className="flex flex-row gap-4 p-4 bg-[var(--form-bg)] rounded shadow-md max-w-xs">
-      <label className={baseLabelClass}>
-        Sort By:
+    <div className="flex flex-wrap items-center gap-3 p-4 rounded-xl border border-[var(--border-color)] bg-[var(--form-bg)] mb-4">
+      <span className="text-xs font-semibold uppercase tracking-widest text-[var(--muted-text-color)]">
+        Filter
+      </span>
+
+      <div className="flex items-center gap-2">
+        <label className="text-xs text-[var(--muted-text-color)] font-medium">
+          Sort by
+        </label>
         <select
           value={sort}
           onChange={(e) => onSortChange(e.target.value)}
-          className={baseSelectClass}
+          className={selectClass}
         >
-          <option value="">Select</option>
+          <option value="">All</option>
           <option value="status">Status</option>
           <option value="priority">Priority</option>
           <option value="createdAt">Created At</option>
         </select>
-      </label>
+      </div>
 
       {sort === "status" && (
-        <label className={baseLabelClass}>
-          Status:
+        <div className="flex items-center gap-2">
+          <label className="text-xs text-[var(--muted-text-color)] font-medium">
+            Status
+          </label>
           <select
             value={value}
             onChange={(e) => onValueChange(e.target.value)}
-            className={baseSelectClass}
+            className={selectClass}
           >
-            <option value="">Select</option>
+            <option value="">All</option>
             <option value="pending">Pending</option>
             <option value="completed">Completed</option>
             <option value="incomplete">Incomplete</option>
           </select>
-        </label>
+        </div>
       )}
 
       {sort === "priority" && (
-        <label className={baseLabelClass}>
-          Priority:
+        <div className="flex items-center gap-2">
+          <label className="text-xs text-[var(--muted-text-color)] font-medium">
+            Priority
+          </label>
           <select
             value={value}
             onChange={(e) => onValueChange(e.target.value)}
-            className={baseSelectClass}
+            className={selectClass}
           >
-            <option value="">Select</option>
+            <option value="">All</option>
             <option value="high">High</option>
             <option value="medium">Medium</option>
             <option value="low">Low</option>
           </select>
-        </label>
+        </div>
       )}
     </div>
   );
